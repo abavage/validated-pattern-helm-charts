@@ -77,10 +77,19 @@ charts/<chart-name>/
 ### Chart.yaml Conventions
 
 - Use `apiVersion: v2` (Helm 3).
+- Include `home` and `maintainers` fields (required by chart-tester). Example: see `charts/cluster-logging/Chart.yaml`.
 - The `version` field uses strict semver (`MAJOR.MINOR.PATCH`). No `v` prefix.
 - Dependencies reference the Helm repository URL: `https://rh-mobb.github.io/validated-pattern-helm-charts/`.
 - Use tilde ranges (`~1.1.0`) for helper chart dependency versions to allow patch updates.
 - Use `condition:` to make optional dependencies toggleable (e.g., `condition: helper-status-checker.enabled`).
+
+### Chart Linting (ct lint / yamllint)
+
+PRs run `ct lint` which uses yamllint. Follow these rules to avoid lint failures:
+
+- **No trailing blank lines**: YAML files must end with exactly one newline after the last content line. Do not add blank lines at the end of files (`[empty-lines] too many blank lines`).
+- **Run locally before submitting**: `helm lint ./charts/<chart-name>` and `ct lint` (if available) to catch issues early.
+- **Reference charts**: Use existing charts (e.g., `cluster-logging`, `cluster-efs`) as formatting examples when creating or editing chart files.
 
 ### values.yaml Conventions
 
