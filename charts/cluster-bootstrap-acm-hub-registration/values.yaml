@@ -20,5 +20,3 @@ gitopsCluster:
   enabled: true
   argoNamespace: openshift-gitops
   placementName: all-spoke-clusters
-
-
