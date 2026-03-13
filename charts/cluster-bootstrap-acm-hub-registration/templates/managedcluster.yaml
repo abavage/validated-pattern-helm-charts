@@ -9,5 +9,3 @@ metadata:
 spec:
   hubAcceptsClient: {{ .Values.managedCluster.hubAcceptsClient }}
   leaseDurationSeconds: {{ .Values.managedCluster.leaseDurationSeconds }}
-
-

@@ -47,5 +47,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "cluster-bootstrap-acm-hub-registration.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-
