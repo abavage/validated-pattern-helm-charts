@@ -1,3 +1,6 @@
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb
 apiVersion: v2
 dependencies:
 - name: helper-installplan-approver
