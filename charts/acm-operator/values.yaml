@@ -1,0 +1,84 @@
+# Using sub-chart helper-installplan-approver
+helper-status-checker:
+  approver: true
+  enabled: true
+  checks:
+    - operatorName: advanced-cluster-management
+      subscriptionName: advanced-cluster-management
+      namespace:
+        name: open-cluster-management
+      serviceAccount:
+        name: "status-checker"
+# acm-operator.v2.13.3
+helper-operator:
+  enabled: true
+  operators:
+    advanced-cluster-management:
+      operatorgroup:
+        create: true
+        notownnamespace: false
+      enabled: true
+      namespace:
+        name: open-cluster-management
+      subscription:
+        channel: release-2.14
+        approval: Manual
+        operatorName: advanced-cluster-management
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+namespaces:
+  - name: open-cluster-management
+
+# Sync wave for MultiClusterHub deployment
+syncwave: 4
+
+requeueAfterSeconds: 10
+
+# ArgoCD ApplicationSets for spoke cluster management
+argocd:
+  applications:
+  - name: spoke-cluster-config
+    annotations:
+    helmRepoUrl: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+    chart: app-of-apps-infrastructure-acm
+    project: cluster-config-project
+    targetRevision: 0.2.7
+    gitRepoUrl: https://github.com/rosa-hcp-dedicated-vpc/cluster-config.git
+    adGroup: PFAUTHAD
+    # gitPathFile will be constructed dynamically as: {{metadata.labels.environment}}/{{name}}/infrastructure.yaml
+    gitPathFile: infrastructure.yaml
+    repositories:
+    - https://github.com/rosa-hcp-dedicated-vpc/cluster-config.git
+    - https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+  - name: spoke-application-ns
+    annotations:
+    helmRepoUrl: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+    chart: app-of-apps-application-acm
+    project: application-ns-project
+    targetRevision: 1.6.3
+    gitRepoUrl: https://github.com/rosa-hcp-dedicated-vpc/cluster-config.git
+    adGroup: PFAUTHAD
+    # gitPathFile will be constructed dynamically as: {{metadata.labels.environment}}/{{name}}/applications-ns.yaml
+    gitPathFile: applications-ns.yaml
+    repositories:
+    - https://github.com/rosa-hcp-dedicated-vpc/cluster-config.git
+    - https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+
+# apiVersion: operators.coreos.com/v1alpha1
+# kind: Subscription
+# metadata:
+#   creationTimestamp: "2025-07-07T02:50:39Z"
+#   generation: 1
+#   labels:
+#     operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
+#   name: advanced-cluster-management
+#   namespace: open-cluster-management
+#   resourceVersion: "56857"
+#   uid: 76c0ed13-9110-44fc-9b93-8359f0d00a63
+# spec:
+#   channel: release-2.13
+#   installPlanApproval: Automatic
+#   name: advanced-cluster-management
+#   source: redhat-operators
+#   sourceNamespace: openshift-marketplace
+#   startingCSV: advanced-cluster-management.v2.13.3
