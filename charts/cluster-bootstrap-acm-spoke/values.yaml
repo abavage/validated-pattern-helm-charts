@@ -36,7 +36,7 @@ argocd:
   plugin:
     version: "1.18.1"
     AVP_TYPE: awssecretsmanager
-  initialRepositories:
+  initialRepositories: |
     - name: cluster-config
       type: git
       project: default
@@ -58,4 +58,4 @@ application-gitops:
   # So ACM must set: application-gitops.domain via helmValues
   domain: ""
   argocd:
-    initialRepositories:
+    initialRepositories: []
