@@ -9,3 +9,4 @@ dependencies:
 description: Chart to kick off gitops installation and bootstrapping of blue print
 name: cluster-bootstrap
 version: 0.5.9
+
