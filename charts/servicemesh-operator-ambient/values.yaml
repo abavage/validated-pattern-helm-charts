@@ -36,6 +36,3 @@ helper-status-checker:
         name: openshift-operators
       serviceAccount:
         name: "servicemesh-install-check"
-
-
-
