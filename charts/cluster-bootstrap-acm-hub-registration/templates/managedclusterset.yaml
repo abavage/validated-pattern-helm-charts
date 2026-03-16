@@ -1,0 +1,49 @@
+{{- if .Values.gitopsCluster.appArgoNamespace }}
+---
+# Per-cluster ManagedClusterSet so that each spoke can be individually
+# bound to namespaces and referenced by team Placements.
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: {{ .Values.clusterName }}
+spec: {}
+---
+# Bind this cluster's set to the application-gitops namespace so that
+# Placements there can select it.
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: {{ .Values.clusterName }}
+  namespace: {{ .Values.gitopsCluster.appArgoNamespace }}
+spec:
+  clusterSet: {{ .Values.clusterName }}
+---
+# Per-cluster Placement that resolves to exactly this spoke.
+# ApplicationSets reference this by name via clusterDecisionResource.
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ .Values.clusterName }}
+  namespace: {{ .Values.gitopsCluster.appArgoNamespace }}
+spec:
+  clusterSets:
+    - {{ .Values.clusterName }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            name: {{ .Values.clusterName }}
+---
+# ConfigMap for the clusterDecisionResource generator to discover
+# PlacementDecisions created by the above Placement.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acm-placement-{{ .Values.clusterName }}
+  namespace: {{ .Values.gitopsCluster.appArgoNamespace }}
+data:
+  apiVersion: cluster.open-cluster-management.io/v1beta1
+  kind: placementdecisions
+  statusListKey: decisions
+  matchKey: clusterName
+{{- end }}
