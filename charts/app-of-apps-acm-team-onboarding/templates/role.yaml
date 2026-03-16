@@ -1,0 +1,45 @@
+{{ range $app := .Values.applications }}
+{{ if $app.gitopsCreate }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-appset-admin
+  namespace: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-team
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applicationsets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applications
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-appset-admin
+  namespace: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-team
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-appset-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: {{ $app.appProject.adGroup }}
+{{- end }}
+{{- end }}
