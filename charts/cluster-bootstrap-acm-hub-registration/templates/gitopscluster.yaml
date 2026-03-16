@@ -26,6 +26,6 @@ spec:
   placementRef:
     kind: Placement
     apiVersion: cluster.open-cluster-management.io/v1beta1
-    name: {{ .Values.gitopsCluster.placementName }}
+    name: {{ .Values.clusterName }}
 {{- end }}
 {{- end }}
