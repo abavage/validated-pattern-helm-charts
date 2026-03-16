@@ -1,0 +1,54 @@
+{{ range $app := .Values.applications }}
+{{ if $app.gitopsCreate }}
+---
+# The application-gitops ApplicationSet controller needs write access in team
+# namespaces to update ApplicationSet status and manage the Applications it
+# generates. The GitOps operator only grants these permissions in the
+# controller's home namespace (application-gitops), not in external
+# sourceNamespaces.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: applicationset-controller
+  namespace: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-team
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applicationsets/status
+    verbs:
+      - update
+      - patch
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applicationsets/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applications
+    verbs:
+      - create
+      - get
+      - list
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: applicationset-controller
+  namespace: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-team
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: applicationset-controller
+subjects:
+  - kind: ServiceAccount
+    name: application-gitops-applicationset-controller
+    namespace: {{ $.Values.gitopsNamespace }}
+{{- end }}
+{{- end }}

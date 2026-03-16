@@ -1,7 +1,7 @@
 apiVersion: v2
 name: app-of-apps-acm-team-onboarding
 description: Chart to onboard teams on an ACM hub with AppProjects, RBAC, and placement infrastructure for spoke deployment via ApplicationSets
-version: 0.3.0
+version: 0.3.1
 home: https://rh-mobb.github.io/validated-pattern-helm-charts/
 maintainers:
   - name: rh-mobb
