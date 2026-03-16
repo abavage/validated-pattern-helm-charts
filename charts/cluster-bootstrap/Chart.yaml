@@ -8,6 +8,6 @@ dependencies:
   version: 1.6.0
 description: Chart to kick off gitops installation and bootstrapping of blue print
 name: cluster-bootstrap
-version: 0.5.10
+version: 0.5.11
 maintainers:
   - name: rh-mobb
