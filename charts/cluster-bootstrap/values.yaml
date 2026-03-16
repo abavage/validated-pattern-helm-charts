@@ -61,7 +61,7 @@ argocd:
     helmRepoUrl: https://rh-mobb.github.io/validated-pattern-helm-charts/
     chart: app-of-apps-application
     project: application-ns-project
-    targetRevision: 1.5.5
+    targetRevision: 1.5.6
     gitRepoUrl: https://github.com/rosa-hcp-dedicated-vpc/cluster-config.git
     adGroup: PFAUTHAD
     gitPathFile: /applications-ns.yaml
