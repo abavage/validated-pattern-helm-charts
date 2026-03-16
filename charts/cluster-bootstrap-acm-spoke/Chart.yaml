@@ -8,7 +8,7 @@ dependencies:
   version: ~0.1.0
 - name: application-gitops
   repository: https://rh-mobb.github.io/validated-pattern-helm-charts/
-  version: 1.4.0
+  version: 1.5.2
 description: Chart to kick off gitops installation and bootstrapping of blue print
 name: cluster-bootstrap-acm-spoke
-version: 0.6.7
+version: 0.7.0
