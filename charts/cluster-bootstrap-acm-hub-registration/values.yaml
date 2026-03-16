@@ -19,4 +19,5 @@ applicationManager:
 gitopsCluster:
   enabled: true
   argoNamespace: openshift-gitops
+  appArgoNamespace: application-gitops
   placementName: all-spoke-clusters

@@ -12,4 +12,20 @@ spec:
     kind: Placement
     apiVersion: cluster.open-cluster-management.io/v1beta1
     name: {{ .Values.gitopsCluster.placementName }}
+{{- if .Values.gitopsCluster.appArgoNamespace }}
+---
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: {{ .Values.clusterName }}-app-gitops
+  namespace: {{ .Values.gitopsCluster.appArgoNamespace }}
+spec:
+  argoServer:
+    cluster: local-cluster
+    argoNamespace: {{ .Values.gitopsCluster.appArgoNamespace }}
+  placementRef:
+    kind: Placement
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    name: {{ .Values.gitopsCluster.placementName }}
+{{- end }}
 {{- end }}
