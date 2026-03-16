@@ -1,0 +1,41 @@
+{{ range $app := .Values.applications }}
+{{ if $app.gitopsCreate }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ $app.apmnum }}-{{ $app.appserviceNumber }}-project
+  namespace: {{ $.Values.gitopsNamespace }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "{{ $app.apmnum }}-{{ $app.appserviceNumber }} team project (ACM spoke deployment)"
+  sourceNamespaces:
+    - {{ $app.apmnum }}-{{ $app.appserviceNumber }}-team
+  sourceRepos:
+    {{- toYaml $app.appProject.repos | nindent 4 }}
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  destinations:
+    {{- range $ns := $app.appProject.spokeNamespaces }}
+    - namespace: {{ $ns }}
+      server: 'https://kubernetes.default.svc'
+    {{- end }}
+  {{- if $app.appProject.destinations }}
+    {{- toYaml $app.appProject.destinations | nindent 4 }}
+  {{- end }}
+  roles:
+  {{- if $app.appProject.roles }}
+    {{- toYaml $app.appProject.roles | nindent 4 }}
+  {{- else }}
+    - name: team-appset-admin
+      description: "Allows {{ $app.appProject.adGroup }} to manage applications and applicationsets"
+      policies:
+        - "p, proj:{{ $app.apmnum }}-{{ $app.appserviceNumber }}-project:team-appset-admin, applications, *, {{ $app.apmnum }}-{{ $app.appserviceNumber }}-project/*, allow"
+        - "p, proj:{{ $app.apmnum }}-{{ $app.appserviceNumber }}-project:team-appset-admin, applicationsets, *, {{ $app.apmnum }}-{{ $app.appserviceNumber }}-project/*, allow"
+      groups:
+        - {{ $app.appProject.adGroup }}
+  {{- end }}
+{{- end }}
+{{- end }}

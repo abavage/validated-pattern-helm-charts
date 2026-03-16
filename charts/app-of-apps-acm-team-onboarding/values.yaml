@@ -1,0 +1,15 @@
+gitopsNamespace: application-gitops
+
+# applications:
+#   - name: istio-demo
+#     apmnum: "istio"
+#     appserviceNumber: "demo"
+#     gitopsCreate: true
+#     appProject:
+#       adGroup: PFAUTHAD
+#       repos:
+#         - 'https://rh-mobb.github.io/validated-pattern-helm-charts'
+#         - 'https://github.com/rh-mobb/rosa-cluster-config.git'
+#       spokeNamespaces:
+#         - istio-system
+#         - istio-demo

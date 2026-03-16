@@ -13,6 +13,14 @@ spec:
   - '*-team'
   - application-gitops
   applicationInstanceLabelKey: argocd.argoproj.io/instance
+  applicationSet:
+    resources:
+      limits:
+        cpu: '1'
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
   controller:
     processors: {}
     resources:
