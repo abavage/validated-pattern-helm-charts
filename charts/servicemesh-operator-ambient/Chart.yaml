@@ -2,7 +2,7 @@ apiVersion: v2
 name: servicemesh-operator-ambient
 description: Helm chart for deploying Red Hat OpenShift Service Mesh 3 Operator
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "3.0"
 dependencies:
   - name: helper-status-checker
@@ -11,4 +11,3 @@ dependencies:
     condition: helper-status-checker.enabled
 maintainers:
   - name: rh-mobb
-  

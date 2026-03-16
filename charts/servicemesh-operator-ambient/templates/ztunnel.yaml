@@ -1,5 +1,5 @@
 {{- if .Values.ambient.enabled }}
-apiVersion: sailoperator.io/v1alpha1
+apiVersion: sailoperator.io/v1
 kind: ZTunnel
 metadata:
   name: {{ .Values.ambient.ztunnel.name }}
@@ -8,8 +8,5 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   namespace: {{ .Values.ambient.ztunnel.namespace }}
-  profile: ambient
-  {{- if .Values.ambient.ztunnel.version }}
-  version: {{ .Values.ambient.ztunnel.version }}
-  {{- end }}
+  version: {{ .Values.ambient.ztunnel.version | default .Values.ambient.version }}
 {{- end }}

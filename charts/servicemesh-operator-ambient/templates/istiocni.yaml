@@ -9,9 +9,7 @@ metadata:
 spec:
   namespace: {{ .Values.ambient.cni.namespace }}
   profile: ambient
-  {{- if .Values.ambient.cni.version }}
-  version: {{ .Values.ambient.cni.version }}
-  {{- end }}
+  version: {{ .Values.ambient.cni.version | default .Values.ambient.version }}
   values:
     cni:
       ambient:

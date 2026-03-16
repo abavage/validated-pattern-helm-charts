@@ -13,6 +13,7 @@ operatorGroup:
 
 ambient:
   enabled: true
+  version: v1.27-latest
   istio:
     name: default
     namespace: istio-system

@@ -9,9 +9,7 @@ metadata:
 spec:
   namespace: {{ .Values.ambient.istio.namespace }}
   profile: ambient
-  {{- if .Values.ambient.istio.version }}
-  version: {{ .Values.ambient.istio.version }}
-  {{- end }}
+  version: {{ .Values.ambient.istio.version | default .Values.ambient.version }}
   values:
     pilot:
       trustedZtunnelNamespace: {{ .Values.ambient.ztunnel.namespace }}
