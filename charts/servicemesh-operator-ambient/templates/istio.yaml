@@ -1,0 +1,18 @@
+{{- if .Values.ambient.enabled }}
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: {{ .Values.ambient.istio.name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  namespace: {{ .Values.ambient.istio.namespace }}
+  profile: ambient
+  {{- if .Values.ambient.istio.version }}
+  version: {{ .Values.ambient.istio.version }}
+  {{- end }}
+  values:
+    pilot:
+      trustedZtunnelNamespace: {{ .Values.ambient.ztunnel.namespace }}
+{{- end }}

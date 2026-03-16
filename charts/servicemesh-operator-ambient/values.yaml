@@ -1,0 +1,41 @@
+namespace: openshift-operators
+
+subscription:
+  name: servicemeshoperator3
+  channel: stable
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: false
+
+ambient:
+  enabled: true
+  istio:
+    name: default
+    namespace: istio-system
+    version: ""
+  cni:
+    name: default
+    namespace: istio-cni
+    version: ""
+  ztunnel:
+    name: default
+    namespace: ztunnel
+    version: ""
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: servicemeshoperator3
+      subscriptionName: servicemeshoperator3
+      namespace:
+        name: openshift-operators
+      serviceAccount:
+        name: "servicemesh-install-check"
+
+
+

@@ -1,0 +1,22 @@
+{{- if .Values.ambient.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.ambient.istio.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.ambient.cni.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.ambient.ztunnel.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+{{- end }}
