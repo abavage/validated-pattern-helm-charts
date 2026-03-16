@@ -1,3 +1,6 @@
+# The clusterDecisionResource generator in ApplicationSets requires the
+# ApplicationSet controller to read ACM PlacementDecisions. The GitOps
+# operator does not grant this by default.
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -15,6 +18,7 @@ rules:
   - list
   - watch
 ---
+# Bind to openshift-gitops ApplicationSet controller
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -30,6 +34,8 @@ subjects:
   name: cluster-gitops-applicationset-controller
   namespace: openshift-gitops
 ---
+# Bind to application-gitops ApplicationSet controller so team
+# ApplicationSets in *-team namespaces can use clusterDecisionResource
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -40,6 +46,43 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: applicationset-placementdecision-reader
+subjects:
+- kind: ServiceAccount
+  name: application-gitops-applicationset-controller
+  namespace: application-gitops
+---
+# When applicationSet.sourceNamespaces is set on the ArgoCD CR, the
+# ApplicationSet controller needs cluster-scoped read access to AppProjects
+# to validate project membership across namespaces. The OpenShift GitOps
+# operator does not add this to the controller's ClusterRole automatically.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: applicationset-appproject-reader
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - appprojects
+  verbs:
+  - get
+  - list
+  - watch
+---
+# Bind to application-gitops ApplicationSet controller which has
+# applicationSet.sourceNamespaces: ["*-team", "application-gitops"]
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: application-gitops-applicationset-appproject-reader
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: applicationset-appproject-reader
 subjects:
 - kind: ServiceAccount
   name: application-gitops-applicationset-controller
