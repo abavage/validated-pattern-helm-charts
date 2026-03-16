@@ -5,7 +5,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: "{{ $applications.apmnum }}-project"
+  name: "{{ $applications.apmnum }}-{{ $applications.appserviceNumber }}-project"
   namespace: application-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
