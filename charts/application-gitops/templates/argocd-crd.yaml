@@ -11,12 +11,10 @@ metadata:
 spec:
   sourceNamespaces:
   - '*-team'
-  - application-gitops
   applicationInstanceLabelKey: argocd.argoproj.io/instance
   applicationSet:
     sourceNamespaces:
     - '*-team'
-    - application-gitops
     resources:
       limits:
         cpu: '1'
