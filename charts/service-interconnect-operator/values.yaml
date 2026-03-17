@@ -1,0 +1,23 @@
+namespace: openshift-operators
+
+subscription:
+  name: skupper-operator
+  channel: stable-2
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: false
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: skupper-operator
+      subscriptionName: skupper-operator
+      namespace:
+        name: openshift-operators
+      serviceAccount:
+        name: "skupper-install-check"
