@@ -16,7 +16,9 @@ metadata:
   {{- end }}
 spec:
   generators:
-  - matrix:
+  - merge:
+      mergeKeys:
+        - name
       generators:
       - clusterDecisionResource:
           configMapRef: acm-placement
