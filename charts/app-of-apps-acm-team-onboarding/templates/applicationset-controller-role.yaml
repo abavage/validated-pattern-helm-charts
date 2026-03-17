@@ -15,6 +15,14 @@ rules:
   - apiGroups:
       - argoproj.io
     resources:
+      - applicationsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - argoproj.io
+    resources:
       - applicationsets/status
     verbs:
       - update
