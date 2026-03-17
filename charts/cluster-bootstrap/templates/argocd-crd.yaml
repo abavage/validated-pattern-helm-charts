@@ -55,12 +55,8 @@ spec:
       requests:
         cpu: 250m
         memory: 128Mi
-  initialRepositories: |
-    {{- if kindIs "string" .Values.argocd.initialRepositories }}
-    {{- .Values.argocd.initialRepositories | nindent 4 }}
-    {{- else }}
+  initialRepositories:
     {{- toYaml .Values.argocd.initialRepositories | nindent 4 }}
-    {{- end }}
   initialSSHKnownHosts: {}
   monitoring:
     enabled: false
