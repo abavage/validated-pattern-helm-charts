@@ -2,4 +2,18 @@ name: application-gitops
 gitopsNamespace: application-gitops
 domain: <placeholder_domain>
 argocd:
-  initialRepositories: []
+  initialRepositories:
+    - name: cluster-config
+      type: git
+      project: default
+      url: https://github.com/rh-mobb/rosa-cluster-config.git
+      insecure: true
+    - name: helm-repo
+      type: helm
+      project: default
+      url: https://rh-mobb.github.io/validated-pattern-helm-charts/
+    - name: bookinfo
+      type: git
+      project: default
+      url: https://github.com/foster-rh/bookinfo.git
+      insecure: true
