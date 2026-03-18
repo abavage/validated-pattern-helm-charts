@@ -8,9 +8,28 @@ metadata:
     networking.istio.io/service-type: {{ .Values.gateway.serviceType }}
     argocd.argoproj.io/sync-wave: "3"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  {{- if .Values.gateway.connectivityLink.enabled }}
+  labels:
+    kuadrant.io/gateway: "true"
+  {{- end }}
 spec:
   gatewayClassName: istio
   listeners:
+  {{- if .Values.gateway.connectivityLink.enabled }}
+  - name: https
+    hostname: {{ .Values.gateway.connectivityLink.hostname }}
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - group: ""
+          kind: Secret
+          name: {{ .Values.gateway.connectivityLink.tls.secretName }}
+  {{- else }}
   {{- range .Values.gateway.listeners }}
   - name: {{ .name }}
     port: {{ .port }}
@@ -19,7 +38,8 @@ spec:
       namespaces:
         from: All
   {{- end }}
-{{- if .Values.gateway.route.enabled }}
+  {{- end }}
+{{- if and .Values.gateway.route.enabled (not .Values.gateway.connectivityLink.enabled) }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
