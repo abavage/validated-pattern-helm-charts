@@ -27,6 +27,17 @@ ambient:
     namespace: ztunnel
     version: ""
 
+gateway:
+  enabled: false
+  name: istio-ingress
+  serviceType: ClusterIP
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+  route:
+    enabled: false
+
 helper-status-checker:
   enabled: true
   approver: true
