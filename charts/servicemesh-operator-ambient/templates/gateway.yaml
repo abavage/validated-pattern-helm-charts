@@ -30,10 +30,10 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 spec:
   port:
-    targetPort: http-80
+    targetPort: http
   to:
     kind: Service
-    name: {{ .Values.gateway.name }}
+    name: {{ .Values.gateway.name }}-istio
   wildcardPolicy: None
 {{- end }}
 {{- end }}
