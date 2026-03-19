@@ -1,7 +1,7 @@
-namespace: external-secrets
+namespace: external-secrets-operator
 
 subscription:
-  name: external-secrets-operator
+  name: openshift-external-secrets-operator
   channel: stable-v1
   installPlanApproval: Manual
   source: redhat-operators
@@ -26,9 +26,9 @@ helper-status-checker:
   enabled: true
   approver: true
   checks:
-    - operatorName: external-secrets-operator
-      subscriptionName: external-secrets-operator
+    - operatorName: openshift-external-secrets-operator
+      subscriptionName: openshift-external-secrets-operator
       namespace:
-        name: external-secrets
+        name: external-secrets-operator
       serviceAccount:
         name: "external-secrets-install-check"
