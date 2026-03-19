@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.gateway.name }}
   namespace: {{ .Values.ambient.istio.namespace }}
   annotations:
-    networking.istio.io/service-type: {{ .Values.gateway.serviceType }}
+    networking.istio.io/service-type: {{ if .Values.gateway.connectivityLink.enabled }}LoadBalancer{{ else }}{{ .Values.gateway.serviceType }}{{ end }}
     argocd.argoproj.io/sync-wave: "3"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   {{- if .Values.gateway.connectivityLink.enabled }}
