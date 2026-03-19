@@ -29,7 +29,7 @@ spec:
         - group: ""
           kind: Secret
           name: {{ .Values.gateway.connectivityLink.tls.secretName }}
-  {{- else }}
+  {{- end }}
   {{- range .Values.gateway.listeners }}
   - name: {{ .name }}
     port: {{ .port }}
@@ -38,8 +38,7 @@ spec:
       namespaces:
         from: All
   {{- end }}
-  {{- end }}
-{{- if and .Values.gateway.route.enabled (not .Values.gateway.connectivityLink.enabled) }}
+{{- if .Values.gateway.route.enabled }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
