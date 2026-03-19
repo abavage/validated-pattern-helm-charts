@@ -7,3 +7,29 @@ acme:
 route53:
   hostedZoneID: ""
   region: ap-southeast-4
+
+subscription:
+  name: openshift-cert-manager-operator
+  channel: stable-v1
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+certManagerRole: ""
+
+certManager:
+  overrideArgs:
+    - "--dns01-recursive-nameservers-only"
+    - "--dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53"
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: openshift-cert-manager-operator
+      subscriptionName: openshift-cert-manager-operator
+      namespace:
+        name: cert-manager-operator
+      serviceAccount:
+        name: "cert-manager-install-check"

@@ -21,3 +21,14 @@ target:
   namespace: istio-system
   secretName: aws-credentials
   refreshInterval: 1h
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: external-secrets-operator
+      subscriptionName: external-secrets-operator
+      namespace:
+        name: external-secrets
+      serviceAccount:
+        name: "external-secrets-install-check"

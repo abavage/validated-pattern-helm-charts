@@ -1,8 +1,13 @@
 apiVersion: v2
 name: letsencrypt-clusterissuer
-description: Let's Encrypt ACME ClusterIssuer with DNS-01 Route 53 solver (uses IRSA, no static credentials)
-version: 1.0.0
+description: Installs cert-manager operator and creates a Let's Encrypt ACME ClusterIssuer with DNS-01 Route 53 solver (uses IRSA, no static credentials)
+version: 1.0.1
 type: application
 home: https://rh-mobb.github.io/validated-pattern-helm-charts/
 maintainers:
   - name: rh-mobb
+dependencies:
+  - name: helper-status-checker
+    version: 4.4.3
+    repository: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+    condition: helper-status-checker.enabled

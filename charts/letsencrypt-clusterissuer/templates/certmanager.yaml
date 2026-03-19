@@ -1,0 +1,14 @@
+apiVersion: operator.openshift.io/v1alpha1
+kind: CertManager
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  managementState: Managed
+  {{- if .Values.certManager.overrideArgs }}
+  controllerConfig:
+    overrideArgs:
+      {{- toYaml .Values.certManager.overrideArgs | nindent 6 }}
+  {{- end }}
