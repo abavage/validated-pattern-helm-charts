@@ -1,0 +1,8 @@
+apiVersion: v2
+name: letsencrypt-clusterissuer
+description: Let's Encrypt ACME ClusterIssuer with DNS-01 Route 53 solver (uses IRSA, no static credentials)
+version: 1.0.0
+type: application
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb
