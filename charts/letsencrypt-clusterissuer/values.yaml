@@ -1,0 +1,9 @@
+name: letsencrypt-production
+
+acme:
+  server: https://acme-v02.api.letsencrypt.org/directory
+  email: ""
+
+route53:
+  hostedZoneID: ""
+  region: ap-southeast-4

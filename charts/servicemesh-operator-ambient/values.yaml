@@ -37,6 +37,11 @@ gateway:
       protocol: HTTP
   route:
     enabled: false
+  connectivityLink:
+    enabled: false
+    hostname: ""
+    tls:
+      secretName: shared-app-gw-tls
 
 helper-status-checker:
   enabled: true

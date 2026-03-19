@@ -1,0 +1,23 @@
+namespace: external-secrets
+
+subscription:
+  name: external-secrets-operator
+  channel: stable-v1
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+serviceAccount:
+  name: external-secrets-sa
+  roleArn: ""
+
+secretStore:
+  name: aws-secrets-manager
+  region: ap-southeast-4
+  secretName: connectivity-link-route53-credentials
+
+target:
+  namespace: istio-system
+  secretName: aws-credentials
+  refreshInterval: 1h

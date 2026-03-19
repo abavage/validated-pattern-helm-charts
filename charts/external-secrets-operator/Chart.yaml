@@ -1,0 +1,8 @@
+apiVersion: v2
+name: external-secrets-operator
+description: External Secrets Operator with AWS Secrets Manager integration via IRSA
+version: 1.0.0
+type: application
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb
