@@ -1,0 +1,23 @@
+namespace: openshift-netobserv-operator
+
+subscription:
+  name: netobserv-operator
+  channel: stable
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: true
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: netobserv-operator
+      subscriptionName: netobserv-operator
+      namespace:
+        name: openshift-netobserv-operator
+      serviceAccount:
+        name: "netobserv-install-check"
