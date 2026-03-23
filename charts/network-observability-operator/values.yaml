@@ -11,6 +11,13 @@ subscription:
 operatorGroup:
   create: true
 
+flowCollector:
+  enabled: true
+  namespace: netobserv
+  deploymentModel: Direct
+  agent:
+    sampling: 50
+
 helper-status-checker:
   enabled: true
   approver: true

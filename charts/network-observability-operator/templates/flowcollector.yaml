@@ -1,0 +1,16 @@
+{{- if .Values.flowCollector.enabled }}
+apiVersion: flows.netobserv.io/v1beta2
+kind: FlowCollector
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  namespace: {{ .Values.flowCollector.namespace }}
+  deploymentModel: {{ .Values.flowCollector.deploymentModel }}
+  agent:
+    type: eBPF
+    ebpf:
+      sampling: {{ .Values.flowCollector.agent.sampling }}
+{{- end }}
