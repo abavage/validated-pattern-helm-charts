@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.operatorGroup.name | default .Values.subscription.name }}
   namespace: {{ .Values.namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   {{- if .Values.operatorGroup.targetNamespaces }}
   targetNamespaces:
