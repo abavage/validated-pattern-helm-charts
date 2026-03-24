@@ -10,7 +10,99 @@ spec:
   namespace: {{ .Values.flowCollector.namespace }}
   deploymentModel: {{ .Values.flowCollector.deploymentModel }}
   agent:
-    type: eBPF
+    type: {{ .Values.flowCollector.agent.type }}
     ebpf:
       sampling: {{ .Values.flowCollector.agent.sampling }}
+      cacheActiveTimeout: {{ .Values.flowCollector.agent.cacheActiveTimeout }}
+      cacheMaxFlows: {{ .Values.flowCollector.agent.cacheMaxFlows }}
+      logLevel: {{ .Values.flowCollector.agent.logLevel }}
+      imagePullPolicy: IfNotPresent
+      excludeInterfaces:
+        - lo
+      resources:
+        {{- toYaml .Values.flowCollector.agent.resources | nindent 8 }}
+      metrics:
+        server:
+          port: 9400
+          tls:
+            insecureSkipVerify: false
+            type: Disabled
+  {{- if and .Values.flowCollector.loki.enable .Values.lokiStack.enabled }}
+  loki:
+    enable: true
+    mode: {{ .Values.flowCollector.loki.mode }}
+    {{- if eq .Values.flowCollector.loki.mode "LokiStack" }}
+    lokiStack:
+      name: {{ .Values.lokiStack.name }}
+      namespace: {{ .Values.lokiStack.namespace }}
+    {{- end }}
+    advanced:
+      {{- toYaml .Values.flowCollector.loki.advanced | nindent 6 }}
+    writeBatchSize: {{ .Values.flowCollector.loki.writeBatchSize | int64 }}
+    writeBatchWait: {{ .Values.flowCollector.loki.writeBatchWait }}
+    readTimeout: {{ .Values.flowCollector.loki.readTimeout }}
+    writeTimeout: {{ .Values.flowCollector.loki.writeTimeout }}
+  {{- else }}
+  loki:
+    enable: false
+  {{- end }}
+  consolePlugin:
+    enable: {{ .Values.flowCollector.consolePlugin.enable }}
+    advanced:
+      port: 9001
+      register: {{ .Values.flowCollector.consolePlugin.register }}
+    logLevel: {{ .Values.flowCollector.consolePlugin.logLevel }}
+    imagePullPolicy: IfNotPresent
+    replicas: {{ .Values.flowCollector.consolePlugin.replicas }}
+    resources:
+      {{- toYaml .Values.flowCollector.consolePlugin.resources | nindent 6 }}
+    portNaming:
+      enable: {{ .Values.flowCollector.consolePlugin.portNaming.enable }}
+      portNames:
+        {{- toYaml .Values.flowCollector.consolePlugin.portNaming.portNames | nindent 8 }}
+    quickFilters:
+      {{- toYaml .Values.flowCollector.consolePlugin.quickFilters | nindent 6 }}
+    autoscaler:
+      maxReplicas: 3
+      metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 50
+      minReplicas: 1
+      status: Disabled
+  processor:
+    logLevel: {{ .Values.flowCollector.processor.logLevel }}
+    logTypes: {{ .Values.flowCollector.processor.logTypes }}
+    imagePullPolicy: IfNotPresent
+    resources:
+      {{- toYaml .Values.flowCollector.processor.resources | nindent 6 }}
+    advanced:
+      conversationEndTimeout: {{ .Values.flowCollector.processor.advanced.conversationEndTimeout }}
+      conversationHeartbeatInterval: {{ .Values.flowCollector.processor.advanced.conversationHeartbeatInterval }}
+      conversationTerminatingTimeout: {{ .Values.flowCollector.processor.advanced.conversationTerminatingTimeout }}
+      dropUnusedFields: {{ .Values.flowCollector.processor.advanced.dropUnusedFields }}
+      enableKubeProbes: true
+      healthPort: 8080
+      port: 2055
+      profilePort: 6060
+    metrics:
+      disableAlerts: []
+      server:
+        port: 9401
+        tls:
+          insecureSkipVerify: false
+          type: Disabled
+    multiClusterDeployment: false
+  prometheus:
+    querier:
+      enable: {{ .Values.flowCollector.prometheus.querier.enable }}
+      mode: {{ .Values.flowCollector.prometheus.querier.mode }}
+      timeout: {{ .Values.flowCollector.prometheus.querier.timeout }}
+  exporters: []
+  networkPolicy:
+    additionalNamespaces: []
+    enable: false
 {{- end }}
