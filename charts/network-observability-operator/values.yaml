@@ -1,30 +1,157 @@
 namespace: openshift-netobserv-operator
 
-subscription:
-  name: netobserv-operator
-  channel: stable
-  installPlanApproval: Manual
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-  startingCSV: ""
+subscriptions:
+  - name: netobserv-operator
+    namespace: openshift-netobserv-operator
+    channel: stable
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    startingCSV: ""
+    enabled: true
+  - name: loki-operator
+    namespace: openshift-operators-redhat
+    channel: stable-6.2
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    startingCSV: loki-operator.v6.2.0
+    enabled: true
+    roleArn: ""
 
 operatorGroup:
   create: true
+  name: netobserv-operator
+  namespace: openshift-netobserv-operator
 
+# Loki Stack configuration
+lokiStack:
+  enabled: true
+  name: loki
+  namespace: netobserv
+  size: "1x.demo"
+  storageClassName: gp3-csi
+  credentialMode: token
+  storage:
+    secretName: loki-s3
+    secretType: s3
+    schemaVersion: v13
+    schemaEffectiveDate: "2023-10-15"
+  tenants:
+    mode: openshift-network
+  limits:
+    global:
+      queries:
+        maxQuerySeries: 2000
+
+# S3 object storage configuration
+objectStorage:
+  s3:
+    bucketName: ""
+    region: ap-southeast-4
+    audience: openshift
+
+# External Secrets Operator configuration for Loki S3 secret
+externalSecret:
+  enabled: true
+  secretStore: connectivity-link-cluster-secret-store
+  remoteKey: ""
+
+# FlowCollector configuration
 flowCollector:
   enabled: true
   namespace: netobserv
   deploymentModel: Direct
   agent:
+    type: eBPF
     sampling: 50
+    cacheActiveTimeout: 5s
+    cacheMaxFlows: 100000
+    logLevel: info
+    resources:
+      limits:
+        memory: 800Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
+  loki:
+    enable: true
+    mode: LokiStack
+    advanced:
+      staticLabels:
+        app: netobserv-flowcollector
+      writeMaxBackoff: 5s
+      writeMaxRetries: 2
+      writeMinBackoff: 1s
+    writeBatchSize: 10485760
+    writeBatchWait: 1s
+    readTimeout: 30s
+    writeTimeout: 10s
+  consolePlugin:
+    enable: true
+    register: true
+    logLevel: info
+    replicas: 1
+    resources:
+      limits:
+        memory: 100Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
+    portNaming:
+      enable: true
+      portNames:
+        "3100": loki
+    quickFilters:
+      - name: Applications
+        default: true
+        filter:
+          flow_layer: '"app"'
+      - name: Infrastructure
+        filter:
+          flow_layer: '"infra"'
+      - name: Pods network
+        default: true
+        filter:
+          src_kind: '"Pod"'
+          dst_kind: '"Pod"'
+      - name: Services network
+        filter:
+          dst_kind: '"Service"'
+  processor:
+    logLevel: info
+    logTypes: Flows
+    resources:
+      limits:
+        memory: 800Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    advanced:
+      conversationEndTimeout: 10s
+      conversationHeartbeatInterval: 30s
+      conversationTerminatingTimeout: 5s
+      dropUnusedFields: true
+  prometheus:
+    querier:
+      enable: true
+      mode: Auto
+      timeout: 30s
 
+# Status checker for both operators
 helper-status-checker:
   enabled: true
   approver: true
   checks:
-    - operatorName: netobserv-operator
+    - operatorName: network-observability-operator
       subscriptionName: netobserv-operator
       namespace:
         name: openshift-netobserv-operator
       serviceAccount:
         name: "netobserv-install-check"
+    - operatorName: loki-operator
+      subscriptionName: loki-operator
+      namespace:
+        name: openshift-operators-redhat
+      serviceAccount:
+        name: "loki-install-check"

@@ -1,0 +1,33 @@
+{{- if .Values.lokiStack.enabled }}
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: {{ .Values.lokiStack.name }}
+  namespace: {{ .Values.lokiStack.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  size: {{ .Values.lokiStack.size }}
+  storage:
+    schemas:
+      - effectiveDate: {{ .Values.lokiStack.storage.schemaEffectiveDate | quote }}
+        version: {{ .Values.lokiStack.storage.schemaVersion }}
+    secret:
+      name: {{ .Values.lokiStack.storage.secretName }}
+      type: {{ .Values.lokiStack.storage.secretType }}
+      credentialMode: {{ .Values.lokiStack.credentialMode }}
+  storageClassName: {{ .Values.lokiStack.storageClassName }}
+  tenants:
+    mode: {{ .Values.lokiStack.tenants.mode }}
+  {{- if .Values.lokiStack.limits }}
+  limits:
+    {{- if .Values.lokiStack.limits.global }}
+    global:
+      {{- if .Values.lokiStack.limits.global.queries }}
+      queries:
+        {{- toYaml .Values.lokiStack.limits.global.queries | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
