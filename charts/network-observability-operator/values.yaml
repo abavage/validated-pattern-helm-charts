@@ -9,6 +9,8 @@ subscriptions:
     sourceNamespace: openshift-marketplace
     startingCSV: ""
     enabled: true
+    createNamespace: true
+    createOperatorGroup: true
   - name: loki-operator
     namespace: openshift-operators-redhat
     channel: stable-6.2
@@ -18,11 +20,8 @@ subscriptions:
     startingCSV: loki-operator.v6.2.0
     enabled: true
     roleArn: ""
-
-operatorGroup:
-  create: true
-  name: netobserv-operator
-  namespace: openshift-netobserv-operator
+    createNamespace: true
+    createOperatorGroup: true
 
 # Loki Stack configuration
 lokiStack:
