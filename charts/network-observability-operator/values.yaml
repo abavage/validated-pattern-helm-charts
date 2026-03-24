@@ -53,7 +53,7 @@ objectStorage:
 # External Secrets Operator configuration for Loki S3 secret
 externalSecret:
   enabled: true
-  secretStore: connectivity-link-cluster-secret-store
+  secretStore: aws-secrets-manager
   remoteKey: ""
 
 # FlowCollector configuration
