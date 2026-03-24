@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.lokiStack.namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "5"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,ServerSideApply=true
 spec:
   size: {{ .Values.lokiStack.size }}
   storage:

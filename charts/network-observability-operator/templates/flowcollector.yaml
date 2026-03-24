@@ -5,7 +5,7 @@ metadata:
   name: cluster
   annotations:
     argocd.argoproj.io/sync-wave: "5"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,ServerSideApply=true
 spec:
   namespace: {{ .Values.flowCollector.namespace }}
   deploymentModel: {{ .Values.flowCollector.deploymentModel }}
