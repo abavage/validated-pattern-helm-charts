@@ -1,5 +1,26 @@
 {{- range .Values.subscriptions }}
 {{- if .enabled }}
+{{- if .createNamespace }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+{{- end }}
+{{- if .createOperatorGroup }}
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: {{ .name }}
+  namespace: {{ .namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  upgradeStrategy: Default
+{{- end }}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
