@@ -69,10 +69,9 @@ flowCollector:
     logLevel: info
     resources:
       limits:
-        cpu: 1000m
         memory: 800Mi
       requests:
-        cpu: 250m
+        cpu: 100m
         memory: 50Mi
   loki:
     enable: true
@@ -130,9 +129,7 @@ flowCollector:
     filters:
       - outputTarget: Loki
         query: >-
-          SrcK8S_Namespace="openshift-ingress" OR DstK8S_Namespace="openshift-ingress"
-          OR SrcK8S_Namespace="istio-system" OR DstK8S_Namespace="istio-system"
-          OR SrcK8S_Namespace="istio-demo" OR DstK8S_Namespace="istio-demo"
+          SrcK8S_Namespace="istio-demo" OR DstK8S_Namespace="istio-demo"
     advanced:
       conversationEndTimeout: 10s
       conversationHeartbeatInterval: 30s
