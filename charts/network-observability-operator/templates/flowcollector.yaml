@@ -96,6 +96,18 @@ spec:
           insecureSkipVerify: false
           type: Disabled
     multiClusterDeployment: false
+    {{- if .Values.flowCollector.processor.filters }}
+    filters:
+      {{- range .Values.flowCollector.processor.filters }}
+      - query: {{ .query | quote }}
+        {{- if .outputTarget }}
+        outputTarget: {{ .outputTarget }}
+        {{- end }}
+        {{- if .sampling }}
+        sampling: {{ .sampling }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
   prometheus:
     querier:
       enable: {{ .Values.flowCollector.prometheus.querier.enable }}
