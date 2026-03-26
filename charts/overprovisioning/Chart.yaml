@@ -1,9 +1,5 @@
 apiVersion: v2
 name: overprovisioning
-description: Overprovisioning DaemonSet to reserve spare capacity on every node
-icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
+description: overprovisioning pods
 type: application
-version: 0.0.8
-home: https://rh-mobb.github.io/validated-pattern-helm-charts/
-maintainers:
-  - name: rh-mobb
+version: 0.0.9
