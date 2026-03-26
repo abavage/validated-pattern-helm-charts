@@ -10,5 +10,6 @@ dependencies:
     version: 4.4.3
     repository: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
     condition: helper-status-checker.enabled
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
 maintainers:
   - name: rh-mobb
