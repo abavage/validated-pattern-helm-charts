@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: overprovisioning
+  name: overprovisioning
+  namespace: overprovisioning
+spec:
+  selector:
+    matchLabels:
+      app: overprovisioning
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: overprovisioning
+    spec:
+      containers:
+      - args:
+        - |
+          sleep infinity
+        command:
+        - /bin/bash
+        - -c
+        image: {{ .Values.image }}:{{ .Values.tag }}
+        imagePullPolicy: IfNotPresent
+        name: overprovisioning
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      priorityClassName: overprovisioning
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
