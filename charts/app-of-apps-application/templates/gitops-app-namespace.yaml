@@ -5,13 +5,13 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ $applications.apmnum }}-{{ $applications.appserviceNumber }}-team
-  annotations:  
   {{- if $applications.annotations }}
-    {{- toYaml $applications.annotations | trimPrefix "|" | indent 2 }}
-  {{ end }}
-  labels:
-    {{- if $applications.labels }}
-      {{- toYaml $applications.labels | trimPrefix "|" | indent 2 }}
-    {{ end }}
+  annotations:
+    {{- toYaml $applications.annotations | trimPrefix "|" | nindent 4 }}
   {{- end }}
+  {{- if $applications.labels }}
+  labels:
+    {{- toYaml $applications.labels | trimPrefix "|" | nindent 4 }}
+  {{- end }}
+{{- end }}
 {{- end }}

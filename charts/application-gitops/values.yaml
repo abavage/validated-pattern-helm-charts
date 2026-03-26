@@ -12,8 +12,4 @@ argocd:
       type: helm
       project: default
       url: https://rh-mobb.github.io/validated-pattern-helm-charts/
-    - name: bookinfo
-      type: git
-      project: default
-      url: https://github.com/foster-rh/bookinfo.git
-      insecure: true
+
