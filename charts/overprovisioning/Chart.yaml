@@ -1,5 +1,9 @@
 apiVersion: v2
 name: overprovisioning
-description: overprovisioning pods
+description: Low-priority overprovisioning pods to reserve spare cluster capacity
+icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
 type: application
 version: 0.0.9
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb
