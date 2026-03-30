@@ -1,4 +1,8 @@
+apiVersion: v2
 name: app-of-apps-application
 description: Chart to generate argocd apps for each team and gitops set up
-version: 1.5.7
-apiVersion: v2
+icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
+version: 1.5.8
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb

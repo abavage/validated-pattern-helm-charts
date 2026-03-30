@@ -55,7 +55,7 @@ argocd:
     helmRepoUrl: https://rh-mobb.github.io/validated-pattern-helm-charts/
     chart: app-of-apps-application
     project: application-ns-project
-    targetRevision: 1.5.7
+    targetRevision: 1.5.8
     gitRepoUrl: https://github.com/rh-mobb/rosa-cluster-config.git
     adGroup: PFAUTHAD
     # gitPathFile will be constructed dynamically as: {{metadata.labels.environment}}/{{name}}/applications-ns.yaml

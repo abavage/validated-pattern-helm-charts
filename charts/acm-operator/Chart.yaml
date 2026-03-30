@@ -1,4 +1,5 @@
 home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
 maintainers:
   - name: rh-mobb
 dependencies:
@@ -9,6 +10,6 @@ dependencies:
     version: 1.1.0
     repository: https://rh-mobb.github.io/validated-pattern-helm-charts/
 name: acm-operator
-version: 0.5.23
+version: 0.5.24
 apiVersion: v2
 description: Chart to deploy Red Hat Advanced Cluster Management (RHACM) with ArgoCD ApplicationSets for spoke cluster management

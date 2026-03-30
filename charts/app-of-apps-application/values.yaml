@@ -20,7 +20,7 @@
 #   AVP_TYPE: "awssecretsmanager"
 # #################################################################
 # # INFRASTRUCTURE Charts to be deployed.
-# ################################################################# 
+# #################################################################
 # applications:
 #   - name: payments
 #     appNumber: "1234"
@@ -42,4 +42,3 @@
 #       repos:
 #       - 'https://rh-mobb.github.io/validated-pattern-helm-charts'
 #       - 'https://github.com/rh-mobb/cluster-config.git'
-    
