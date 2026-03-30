@@ -6,13 +6,12 @@ metadata:
   name: "{{ $ns.name }}"
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
-  {{- if $ns.annotations }}
-  annotations:
-    {{- toYaml $ns.annotations | trimPrefix "|" | indent 2 }}
-  {{ end }}
-  labels:
+    {{- with $ns.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- if $ns.labels }}
-    {{- toYaml $ns.labels | trimPrefix "|" | indent 2 }}
-  {{ end }}
+  labels:
+    {{- toYaml $ns.labels | nindent 4 }}
+  {{- end }}
 ---
 {{ end -}}
