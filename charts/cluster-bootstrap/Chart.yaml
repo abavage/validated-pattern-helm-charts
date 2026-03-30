@@ -7,6 +7,7 @@ dependencies:
   repository: https://rh-mobb.github.io/validated-pattern-helm-charts/
   version: 1.6.1
 description: Chart to kick off gitops installation and bootstrapping of blue print
+icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
 name: cluster-bootstrap
 version: 0.5.14
 maintainers:
