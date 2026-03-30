@@ -1,4 +1,5 @@
 {{ $defaults := .Values.defaults -}}
+{{- if ne ($.Values.acmMode | default "") "hub" }}
 ---
 {{ range $applications := .Values.applications -}}
 ---
@@ -36,4 +37,5 @@ spec:
     syncOptions:
     - ApplyOutOfSyncOnly=true
 ---
+{{- end }}
 {{- end }}
