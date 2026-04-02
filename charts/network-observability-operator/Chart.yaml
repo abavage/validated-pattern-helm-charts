@@ -4,7 +4,7 @@ description: Helm chart for deploying the Network Observability Operator with Lo
 icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
 home: https://rh-mobb.github.io/validated-pattern-helm-charts/
 type: application
-version: 2.1.3
+version: 2.1.4
 appVersion: "1.11"
 dependencies:
   - name: helper-status-checker

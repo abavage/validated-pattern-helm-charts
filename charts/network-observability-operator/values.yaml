@@ -1,27 +1,11 @@
 namespace: openshift-netobserv-operator
 
-subscriptions:
-  - name: netobserv-operator
-    namespace: openshift-netobserv-operator
-    channel: stable
-    installPlanApproval: Manual
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
-    startingCSV: ""
-    enabled: true
-    createNamespace: true
-    createOperatorGroup: true
-  - name: loki-operator
-    namespace: openshift-operators-redhat
-    channel: stable-6.2
-    installPlanApproval: Manual
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
-    startingCSV: loki-operator.v6.2.0
-    enabled: true
-    roleArn: ""
-    createNamespace: true
-    createOperatorGroup: true
+netobservOperator:
+  startingCSV: ""
+
+lokiOperator:
+  startingCSV: loki-operator.v6.2.0
+  roleArn: ""
 
 # Loki Stack configuration
 lokiStack:
@@ -126,10 +110,7 @@ flowCollector:
       requests:
         cpu: 100m
         memory: 100Mi
-    filters:
-      - outputTarget: Loki
-        query: >-
-          SrcK8S_Namespace="istio-demo" OR DstK8S_Namespace="istio-demo"
+    filterNamespaces: []
     advanced:
       conversationEndTimeout: 10s
       conversationHeartbeatInterval: 30s
