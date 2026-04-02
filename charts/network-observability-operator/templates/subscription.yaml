@@ -1,48 +1,74 @@
-{{- range .Values.subscriptions }}
-{{- if .enabled }}
-{{- if .createNamespace }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .namespace }}
+  name: openshift-netobserv-operator
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
-{{- end }}
-{{- if .createOperatorGroup }}
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: {{ .name }}
-  namespace: {{ .namespace }}
+  name: netobserv-operator
+  namespace: openshift-netobserv-operator
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   upgradeStrategy: Default
-{{- end }}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: {{ .name }}
-  namespace: {{ .namespace }}
+  name: netobserv-operator
+  namespace: openshift-netobserv-operator
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  channel: {{ .channel }}
-  installPlanApproval: {{ .installPlanApproval }}
-  name: {{ .name }}
-  source: {{ .source }}
-  sourceNamespace: {{ .sourceNamespace }}
-  {{- if .startingCSV }}
-  startingCSV: {{ .startingCSV }}
+  channel: stable
+  installPlanApproval: Manual
+  name: netobserv-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  {{- if .Values.netobservOperator.startingCSV }}
+  startingCSV: {{ .Values.netobservOperator.startingCSV }}
   {{- end }}
-  {{- if .roleArn }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-operators-redhat
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: loki-operator
+  namespace: openshift-operators-redhat
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  upgradeStrategy: Default
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: loki-operator
+  namespace: openshift-operators-redhat
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  channel: stable-6.2
+  installPlanApproval: Manual
+  name: loki-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  {{- if .Values.lokiOperator.startingCSV }}
+  startingCSV: {{ .Values.lokiOperator.startingCSV }}
+  {{- end }}
+  {{- if .Values.lokiOperator.roleArn }}
   config:
     env:
       - name: ROLEARN
-        value: {{ .roleArn }}
+        value: {{ .Values.lokiOperator.roleArn }}
   {{- end }}
-{{- end }}
-{{- end }}

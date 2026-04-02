@@ -96,17 +96,10 @@ spec:
           insecureSkipVerify: false
           type: Disabled
     multiClusterDeployment: false
-    {{- if .Values.flowCollector.processor.filters }}
+    {{- if .Values.flowCollector.processor.filterNamespaces }}
     filters:
-      {{- range .Values.flowCollector.processor.filters }}
-      - query: {{ .query | quote }}
-        {{- if .outputTarget }}
-        outputTarget: {{ .outputTarget }}
-        {{- end }}
-        {{- if .sampling }}
-        sampling: {{ .sampling }}
-        {{- end }}
-      {{- end }}
+      - outputTarget: Loki
+        query: "{{ range $i, $ns := .Values.flowCollector.processor.filterNamespaces }}{{ if $i }} OR {{ end }}SrcK8S_Namespace=\"{{ $ns }}\" OR DstK8S_Namespace=\"{{ $ns }}\"{{ end }}"
     {{- end }}
   prometheus:
     querier:
