@@ -11,6 +11,10 @@ subscription:
 operatorGroup:
   create: false
 
+kiali:
+  enabled: false
+  startingCSV: ""
+
 ambient:
   enabled: true
   version: v1.27-latest
@@ -37,3 +41,9 @@ helper-status-checker:
         name: openshift-operators
       serviceAccount:
         name: "servicemesh-install-check"
+    - operatorName: kiali-operator
+      subscriptionName: kiali-ossm
+      namespace:
+        name: openshift-operators
+      serviceAccount:
+        name: "kiali-install-check"
