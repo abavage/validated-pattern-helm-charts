@@ -4,8 +4,7 @@ metadata:
   name: {{ .Values.subscription.name }}
   namespace: {{ .Values.namespace }}
   annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "0"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   channel: {{ .Values.subscription.channel }}
   installPlanApproval: {{ .Values.subscription.installPlanApproval }}

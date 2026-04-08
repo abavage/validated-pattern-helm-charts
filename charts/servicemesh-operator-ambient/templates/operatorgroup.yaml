@@ -5,8 +5,7 @@ metadata:
   name: {{ .Values.operatorGroup.name | default .Values.subscription.name }}
   namespace: {{ .Values.namespace }}
   annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "-1"
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   {{- if .Values.operatorGroup.targetNamespaces }}
   targetNamespaces:
