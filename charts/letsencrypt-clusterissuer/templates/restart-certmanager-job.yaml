@@ -19,9 +19,9 @@ metadata:
     argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 rules:
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -63,8 +63,10 @@ spec:
             - /bin/sh
             - -c
             - |
-              echo "Restarting cert-manager deployment to pick up IRSA annotation..."
-              oc rollout restart deployment/cert-manager -n cert-manager
-              oc rollout status deployment/cert-manager -n cert-manager --timeout=120s
-              echo "cert-manager restarted successfully"
+              echo "Deleting all cert-manager pods to pick up IRSA annotation..."
+              oc delete pods --all -n cert-manager
+              echo "Waiting for pods to come back..."
+              sleep 30
+              oc get pods -n cert-manager
+              echo "cert-manager pods restarted successfully"
 {{- end }}

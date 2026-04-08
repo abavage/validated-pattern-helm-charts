@@ -1,7 +1,7 @@
 apiVersion: v2
 name: letsencrypt-clusterissuer
 description: Installs cert-manager operator and creates a Let's Encrypt ACME ClusterIssuer with DNS-01 Route 53 solver (uses IRSA, no static credentials)
-version: 1.0.5
+version: 1.0.6
 type: application
 home: https://rh-mobb.github.io/validated-pattern-helm-charts/
 icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
