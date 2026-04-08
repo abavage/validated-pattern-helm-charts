@@ -12,7 +12,6 @@ operatorGroup:
   create: false
 
 kiali:
-  enabled: false
   startingCSV: ""
 
 ambient:
