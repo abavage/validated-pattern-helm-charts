@@ -1,0 +1,24 @@
+{{- if .Values.hyperConverged.create }}
+apiVersion: hco.kubevirt.io/v1beta1
+kind: HyperConverged
+metadata:
+  name: {{ .Values.hyperConverged.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.hyperConverged.syncWave | quote }}
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
+spec:
+  infra: {}
+  workloads: {}
+  featureGates:
+    enableCommonBootImageImport: {{ .Values.hyperConverged.featureGates.enableCommonBootImageImport }}
+    deployTektonTaskResources: {{ .Values.hyperConverged.featureGates.deployTektonTaskResources }}
+  liveMigrationConfig:
+    bandwidthPerMigration: {{ .Values.hyperConverged.liveMigrationConfig.bandwidthPerMigration | quote }}
+    completionTimeoutPerGiB: {{ .Values.hyperConverged.liveMigrationConfig.completionTimeoutPerGiB }}
+    parallelMigrationsPerCluster: {{ .Values.hyperConverged.liveMigrationConfig.parallelMigrationsPerCluster }}
+    parallelOutboundMigrationsPerNode: {{ .Values.hyperConverged.liveMigrationConfig.parallelOutboundMigrationsPerNode }}
+    progressTimeout: {{ .Values.hyperConverged.liveMigrationConfig.progressTimeout }}
+  resourceRequirements:
+    vmiCPUAllocationRatio: {{ .Values.hyperConverged.resourceRequirements.vmiCPUAllocationRatio }}
+{{- end }}

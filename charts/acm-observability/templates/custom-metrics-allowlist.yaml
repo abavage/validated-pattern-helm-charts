@@ -1,0 +1,34 @@
+{{- if .Values.customMetrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observability-metrics-custom-allowlist
+  namespace: {{ include "acm-observability.namespace" . }}
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+data:
+  metrics_list.yaml: |
+    {{- if or .Values.customMetrics.names .Values.customMetrics.excludeNames }}
+    names:
+      {{- range .Values.customMetrics.names }}
+      - {{ . }}
+      {{- end }}
+      {{- range .Values.customMetrics.excludeNames }}
+      - -{{ . }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.customMetrics.rules }}
+    rules:
+      {{- range .Values.customMetrics.rules }}
+      - record: {{ .record | quote }}
+        expr: {{ .expr | quote }}
+      {{- end }}
+    {{- end }}
+  {{- if .Values.customMetrics.userWorkloadMetrics.names }}
+  uwl_metrics_list.yaml: |
+    names:
+      {{- range .Values.customMetrics.userWorkloadMetrics.names }}
+      - {{ . }}
+      {{- end }}
+  {{- end }}
+{{- end }}

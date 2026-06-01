@@ -1,0 +1,12 @@
+{{- if .Values.createNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "acm-observability.namespace" . }}
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+    openshift.io/cluster-monitoring: "true"
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-15"
+{{- end }}

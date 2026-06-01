@@ -1,0 +1,46 @@
+{{- if .Values.consoleLinks.enabled }}
+{{- $ns := include "acm-observability.namespace" . }}
+{{- $domain := .Values.consoleLinks.domain }}
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: {{ include "acm-observability.fullname" . }}-grafana
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+spec:
+  applicationMenu:
+    section: Observability
+    imageURL: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIyIDRhMiAyIDAgMCAwLTItMkg0YTIgMiAwIDAgMC0yIDJ2MTZhMiAyIDAgMCAwIDIgMmgxNmEyIDIgMCAwIDAgMi0yVjR6TTQgOS41aDJ2OUg0di05em00LTNoMnYxMkg4di0xMnptNCA2aDJ2Nmg0di02em00LTQuNWgydjEwLjVoLTJ2LTEwLjV6IiBmaWxsPSIjRjQ2ODAwIi8+PC9zdmc+"
+  href: https://grafana-{{ $ns }}.{{ $domain }}
+  location: ApplicationMenu
+  text: Grafana - ACM Observability
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: {{ include "acm-observability.fullname" . }}-alertmanager
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+spec:
+  applicationMenu:
+    section: Observability
+    imageURL: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTVoLTJ2LTJoMnYyem0wLTRoLTJWN2gydjZ6IiBmaWxsPSIjRTY1MjJDIi8+PC9zdmc+"
+  href: https://console-openshift-console.{{ $domain }}/multicloud/monitoring/alerts
+  location: ApplicationMenu
+  text: Alerts - ACM Observability
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: {{ include "acm-observability.fullname" . }}-prometheus
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+spec:
+  applicationMenu:
+    section: Observability
+    imageURL: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4eiIgZmlsbD0iI0U2NTIyQyIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjQiIGZpbGw9IiNFNjUyMkMiLz48L3N2Zz4="
+  href: https://grafana-{{ $ns }}.{{ $domain }}/explore
+  location: ApplicationMenu
+  text: Prometheus (Explore) - ACM Observability
+{{- end }}

@@ -1,0 +1,203 @@
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: {{ .Values.mco.name }}
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+  {{- with .Values.mco.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  instanceSize: {{ .Values.mco.instanceSize }}
+  enableDownsampling: {{ .Values.mco.enableDownsampling }}
+  imagePullPolicy: {{ .Values.mco.imagePullPolicy }}
+  imagePullSecret: {{ .Values.pullSecret.name }}
+  {{- with .Values.mco.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.mco.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  observabilityAddonSpec:
+    enableMetrics: {{ .Values.mco.observabilityAddonSpec.enableMetrics }}
+    interval: {{ .Values.mco.observabilityAddonSpec.interval }}
+    {{- with .Values.mco.observabilityAddonSpec.resources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  storageConfig:
+    metricObjectStorage:
+      name: {{ .Values.objectStorage.name }}
+      key: {{ .Values.objectStorage.key }}
+      {{- if .Values.objectStorage.tls.secretName }}
+      tlsSecretName: {{ .Values.objectStorage.tls.secretName }}
+      {{- end }}
+      {{- if .Values.objectStorage.tls.secretMountPath }}
+      tlsSecretMountPath: {{ .Values.objectStorage.tls.secretMountPath }}
+      {{- end }}
+      {{- if .Values.objectStorage.irsaRoleArn }}
+      serviceAccountProjection: true
+      {{- end }}
+    {{- if .Values.mco.storageConfig.storageClass }}
+    storageClass: {{ .Values.mco.storageConfig.storageClass }}
+    {{- end }}
+    alertmanagerStorageSize: {{ .Values.mco.storageConfig.alertmanagerStorageSize | quote }}
+    compactStorageSize: {{ .Values.mco.storageConfig.compactStorageSize | quote }}
+    receiveStorageSize: {{ .Values.mco.storageConfig.receiveStorageSize | quote }}
+    ruleStorageSize: {{ .Values.mco.storageConfig.ruleStorageSize | quote }}
+    storeStorageSize: {{ .Values.mco.storageConfig.storeStorageSize | quote }}
+  {{- with .Values.mco.writeStorage }}
+  writeStorage:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if or .Values.mco.advanced.enabled .Values.objectStorage.irsaRoleArn }}
+  advanced:
+    {{- if .Values.mco.advanced.enabled }}
+    retentionConfig:
+      retentionResolutionRaw: {{ .Values.mco.advanced.retentionConfig.retentionResolutionRaw | quote }}
+      retentionResolution5m: {{ .Values.mco.advanced.retentionConfig.retentionResolution5m | quote }}
+      retentionResolution1h: {{ .Values.mco.advanced.retentionConfig.retentionResolution1h | quote }}
+      retentionInLocal: {{ .Values.mco.advanced.retentionConfig.retentionInLocal | quote }}
+      blockDuration: {{ .Values.mco.advanced.retentionConfig.blockDuration | quote }}
+      deleteDelay: {{ .Values.mco.advanced.retentionConfig.deleteDelay | quote }}
+    {{- end }}
+    {{- $irsaAnnotations := dict }}
+    {{- if .Values.objectStorage.irsaRoleArn }}
+    {{- $irsaAnnotations = dict "eks.amazonaws.com/role-arn" .Values.objectStorage.irsaRoleArn }}
+    {{- end }}
+    {{- $receiveResources := .Values.mco.advanced.receive.resources }}
+    {{- $receiveReplicas := .Values.mco.advanced.receive.replicas }}
+    {{- if or $receiveReplicas (not (empty $receiveResources)) (not (empty $irsaAnnotations)) }}
+    receive:
+      {{- if $receiveReplicas }}
+      replicas: {{ $receiveReplicas }}
+      {{- end }}
+      {{- with $receiveResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not (empty $irsaAnnotations) }}
+      serviceAccountAnnotations:
+        {{- toYaml $irsaAnnotations | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $queryReplicas := .Values.mco.advanced.query.replicas }}
+    {{- $queryResources := .Values.mco.advanced.query.resources }}
+    {{- if or $queryReplicas (not (empty $queryResources)) }}
+    query:
+      {{- if $queryReplicas }}
+      replicas: {{ $queryReplicas }}
+      {{- end }}
+      {{- with $queryResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $qfReplicas := .Values.mco.advanced.queryFrontend.replicas }}
+    {{- $qfResources := .Values.mco.advanced.queryFrontend.resources }}
+    {{- if or $qfReplicas (not (empty $qfResources)) }}
+    queryFrontend:
+      {{- if $qfReplicas }}
+      replicas: {{ $qfReplicas }}
+      {{- end }}
+      {{- with $qfResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $compactResources := .Values.mco.advanced.compact.resources }}
+    {{- if or (not (empty $compactResources)) (not (empty $irsaAnnotations)) }}
+    compact:
+      {{- with $compactResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not (empty $irsaAnnotations) }}
+      serviceAccountAnnotations:
+        {{- toYaml $irsaAnnotations | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $storeReplicas := .Values.mco.advanced.store.replicas }}
+    {{- $storeResources := .Values.mco.advanced.store.resources }}
+    {{- if or $storeReplicas (not (empty $storeResources)) (not (empty $irsaAnnotations)) }}
+    store:
+      {{- if $storeReplicas }}
+      replicas: {{ $storeReplicas }}
+      {{- end }}
+      {{- with $storeResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not (empty $irsaAnnotations) }}
+      serviceAccountAnnotations:
+        {{- toYaml $irsaAnnotations | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $ruleReplicas := .Values.mco.advanced.rule.replicas }}
+    {{- $ruleResources := .Values.mco.advanced.rule.resources }}
+    {{- if or $ruleReplicas (not (empty $ruleResources)) (not (empty $irsaAnnotations)) }}
+    rule:
+      {{- if $ruleReplicas }}
+      replicas: {{ $ruleReplicas }}
+      {{- end }}
+      {{- with $ruleResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not (empty $irsaAnnotations) }}
+      serviceAccountAnnotations:
+        {{- toYaml $irsaAnnotations | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $grafanaReplicas := .Values.mco.advanced.grafana.replicas }}
+    {{- $grafanaResources := .Values.mco.advanced.grafana.resources }}
+    {{- if or $grafanaReplicas (not (empty $grafanaResources)) }}
+    grafana:
+      {{- if $grafanaReplicas }}
+      replicas: {{ $grafanaReplicas }}
+      {{- end }}
+      {{- with $grafanaResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $amReplicas := .Values.mco.advanced.alertmanager.replicas }}
+    {{- $amResources := .Values.mco.advanced.alertmanager.resources }}
+    {{- if or $amReplicas (not (empty $amResources)) }}
+    alertmanager:
+      {{- if $amReplicas }}
+      replicas: {{ $amReplicas }}
+      {{- end }}
+      {{- with $amResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $rbacReplicas := .Values.mco.advanced.rbacQueryProxy.replicas }}
+    {{- $rbacResources := .Values.mco.advanced.rbacQueryProxy.resources }}
+    {{- if or $rbacReplicas (not (empty $rbacResources)) }}
+    rbacQueryProxy:
+      {{- if $rbacReplicas }}
+      replicas: {{ $rbacReplicas }}
+      {{- end }}
+      {{- with $rbacResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $obsApiReplicas := .Values.mco.advanced.observatoriumAPI.replicas }}
+    {{- $obsApiResources := .Values.mco.advanced.observatoriumAPI.resources }}
+    {{- if or $obsApiReplicas (not (empty $obsApiResources)) }}
+    observatoriumAPI:
+      {{- if $obsApiReplicas }}
+      replicas: {{ $obsApiReplicas }}
+      {{- end }}
+      {{- with $obsApiResources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}

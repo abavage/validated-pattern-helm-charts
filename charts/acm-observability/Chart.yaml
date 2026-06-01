@@ -1,0 +1,19 @@
+apiVersion: v2
+name: acm-observability
+description: Red Hat Advanced Cluster Management Multi-Cluster Observability Stack
+type: application
+version: 0.1.0
+appVersion: "2.16"
+keywords:
+  - acm
+  - observability
+  - multicluster
+  - thanos
+  - grafana
+  - prometheus
+  - openshift
+  - rosa
+home: https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html/observability/observing-environments-intro
+sources:
+  - https://github.com/stolostron/multicluster-observability-operator
+kubeVersion: ">=1.25.0-0"

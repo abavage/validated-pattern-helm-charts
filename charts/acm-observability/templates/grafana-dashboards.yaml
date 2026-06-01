@@ -1,0 +1,13 @@
+{{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-{{ $path | base | trimSuffix ".json" }}
+  namespace: {{ include "acm-observability.namespace" $ }}
+  labels:
+    {{- include "acm-observability.labels" $ | nindent 4 }}
+data:
+  {{ $path | base }}: |
+    {{- $.Files.Get $path | nindent 4 }}
+{{- end }}

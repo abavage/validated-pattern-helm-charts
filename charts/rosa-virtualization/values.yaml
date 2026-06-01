@@ -1,0 +1,40 @@
+namespace: openshift-cnv
+
+subscription:
+  name: kubevirt-hyperconverged
+  channel: stable
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: true
+  name: kubevirt-hyperconverged-group
+
+hyperConverged:
+  create: true
+  name: kubevirt-hyperconverged
+  syncWave: 2
+  featureGates:
+    enableCommonBootImageImport: true
+    deployTektonTaskResources: false
+  liveMigrationConfig:
+    bandwidthPerMigration: "64Mi"
+    completionTimeoutPerGiB: 800
+    parallelMigrationsPerCluster: 5
+    parallelOutboundMigrationsPerNode: 2
+    progressTimeout: 150
+  resourceRequirements:
+    vmiCPUAllocationRatio: 10
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: kubevirt-hyperconverged
+      subscriptionName: kubevirt-hyperconverged
+      namespace:
+        name: openshift-cnv
+      serviceAccount:
+        name: "cnv-install-check"
