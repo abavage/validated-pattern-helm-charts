@@ -8,8 +8,14 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ .Values.hyperConverged.syncWave | quote }}
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
 spec:
-  infra: {}
-  workloads: {}
+  infra:
+    nodePlacement:
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
+  workloads:
+    nodePlacement:
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
   featureGates:
     enableCommonBootImageImport: {{ .Values.hyperConverged.featureGates.enableCommonBootImageImport }}
     deployTektonTaskResources: {{ .Values.hyperConverged.featureGates.deployTektonTaskResources }}
