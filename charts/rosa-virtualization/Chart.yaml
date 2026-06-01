@@ -1,0 +1,15 @@
+apiVersion: v2
+name: rosa-virtualization
+description: Helm chart for deploying OpenShift Virtualization operator on ROSA
+icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
+type: application
+version: 1.0.0
+appVersion: "4.17"
+dependencies:
+  - name: helper-status-checker
+    version: 4.4.3
+    repository: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+    condition: helper-status-checker.enabled
+home: https://rh-mobb.github.io/validated-pattern-helm-charts/
+maintainers:
+  - name: rh-mobb

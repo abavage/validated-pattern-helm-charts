@@ -1,0 +1,55 @@
+=================================================================
+  ACM Multi-Cluster Observability
+=================================================================
+
+Namespace:     {{ include "acm-observability.namespace" . }}
+MCO CR:        {{ .Values.mco.name }}
+Instance Size: {{ .Values.mco.instanceSize }}
+
+VERIFY DEPLOYMENT:
+  oc get multiclusterobservability {{ .Values.mco.name }}
+  oc get pods -n {{ include "acm-observability.namespace" . }}
+  oc get pods -n open-cluster-management | grep observability
+
+MANAGED CLUSTERS:
+  oc get managedclusteraddons -A | grep observability
+
+ACCESS GRAFANA:
+  oc get route grafana -n {{ include "acm-observability.namespace" . }} -o jsonpath='{.spec.host}'
+
+{{- if .Values.objectStorage.irsaRoleArn }}
+
+IRSA:
+  Role ARN: {{ .Values.objectStorage.irsaRoleArn }}
+  Verify token projection:
+    oc get pods -n {{ include "acm-observability.namespace" . }} -o jsonpath='{.items[0].spec.volumes}' | jq '.[] | select(.name | contains("token"))'
+{{- end }}
+{{- if .Values.alertmanagerConfig.enabled }}
+
+ALERTMANAGER:
+  Custom routing configured:
+    oc get secret alertmanager-config -n {{ include "acm-observability.namespace" . }}
+{{- end }}
+{{- if .Values.customMetrics.enabled }}
+
+CUSTOM METRICS:
+  oc get configmap observability-metrics-custom-allowlist -n {{ include "acm-observability.namespace" . }}
+{{- end }}
+
+{{- if .Values.coo.enabled }}
+
+CLUSTER OBSERVABILITY OPERATOR:
+  oc get subscription cluster-observability-operator -n openshift-operators
+  oc get csv -n openshift-operators | grep cluster-observability
+{{- if .Values.coo.uiPlugin.enabled }}
+  oc get uiplugin monitoring
+  Console: Observe → Alerting (multi-cluster alerts)
+{{- end }}
+{{- end }}
+
+STORAGE:
+  Object storage: {{ .Values.objectStorage.name }}
+  Storage class:  {{ .Values.mco.storageConfig.storageClass | default "(cluster default)" }}
+  Receive PVCs:   {{ .Values.mco.storageConfig.receiveStorageSize }}
+  Compact PVCs:   {{ .Values.mco.storageConfig.compactStorageSize }}
+=================================================================

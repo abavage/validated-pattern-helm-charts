@@ -1,0 +1,25 @@
+{{- if .Values.customAlertRules.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thanos-ruler-custom-rules
+  namespace: {{ include "acm-observability.namespace" . }}
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+data:
+  custom_rules.yaml: |
+    groups:
+      {{- range .Values.customAlertRules.groups }}
+      - name: {{ .name }}
+        rules:
+          {{- range .rules }}
+          - alert: {{ .alert }}
+            expr: {{ .expr | quote }}
+            for: {{ .for | default "5m" }}
+            labels:
+              {{- toYaml .labels | nindent 14 }}
+            annotations:
+              {{- toYaml .annotations | nindent 14 }}
+          {{- end }}
+      {{- end }}
+{{- end }}

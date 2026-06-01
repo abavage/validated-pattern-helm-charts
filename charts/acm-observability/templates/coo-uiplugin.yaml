@@ -1,0 +1,24 @@
+{{- if and .Values.coo.enabled .Values.coo.uiPlugin.enabled }}
+{{- $ns := include "acm-observability.namespace" . }}
+apiVersion: observability.openshift.io/v1alpha1
+kind: UIPlugin
+metadata:
+  name: monitoring
+  labels:
+    {{- include "acm-observability.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "10"
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  type: Monitoring
+  monitoring:
+    acm:
+      enabled: true
+      alertmanager:
+        url: https://alertmanager.{{ $ns }}.svc:9095
+      thanosQuerier:
+        url: https://rbac-query-proxy.{{ $ns }}.svc:8443
+    incidents:
+      enabled: {{ .Values.coo.uiPlugin.incidents.enabled }}
+{{- end }}

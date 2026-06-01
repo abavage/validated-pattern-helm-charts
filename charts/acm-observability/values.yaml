@@ -1,0 +1,262 @@
+# -- Whether the chart should create the observability namespace
+createNamespace: true
+
+# -- Namespace for all observability resources
+namespace: open-cluster-management-observability
+
+# =============================================================================
+# Pull Secret
+# =============================================================================
+pullSecret:
+  # -- Run a pre-install Job that copies the OpenShift pull secret
+  # from openshift-config into the observability namespace.
+  # Set to false if the secret already exists.
+  create: true
+  # -- Name of the pull secret in the observability namespace
+  name: multiclusterhub-operator-pull-secret
+  # -- Image for the copy Job (must have 'oc' CLI)
+  jobImage: "registry.redhat.io/openshift4/ose-cli:latest"
+
+# =============================================================================
+# Object Storage (S3 / IRSA)
+# =============================================================================
+objectStorage:
+  # -- Create the thanos-object-storage secret.
+  # Set to false to use a pre-existing secret.
+  create: true
+  # -- Name of the object storage secret
+  name: thanos-object-storage
+  # -- Key within the secret containing the Thanos config
+  key: thanos.yaml
+
+  # -- S3 bucket configuration (no credentials needed — IRSA handles auth)
+  s3:
+    # -- S3 bucket name (from terraform output: s3_bucket_name)
+    bucket: "acm-observability-dev-hub-1"
+    # -- S3 regional endpoint (from terraform output: s3_bucket_endpoint)
+    endpoint: "s3.ap-southeast-4.amazonaws.com"
+    # -- AWS region
+    region: "ap-southeast-4"
+
+  # -- IRSA role ARN for Thanos service accounts (from terraform output: iam_role_arn)
+  # This gets injected as serviceAccountAnnotations on all Thanos components
+  irsaRoleArn: "arn:aws:iam::808082629126:role/dev-hub-1-acm-observability-thanos"
+
+  # -- Provide raw thanos.yaml content directly (overrides s3.* fields)
+  rawConfig: ""
+
+  # -- TLS configuration for the object storage endpoint
+  tls:
+    # -- Name of a Secret containing a custom CA certificate
+    secretName: ""
+    # -- Mount path for the TLS secret
+    secretMountPath: ""
+
+# =============================================================================
+# MultiClusterObservability CR
+# =============================================================================
+mco:
+  # -- Name of the MCO custom resource (should be "observability")
+  name: observability
+
+  # -- Instance size for the observability stack (t-shirt sizing).
+  # Options: default, minimal, small, medium, large, xlarge, 2xlarge, 4xlarge
+  instanceSize: "default"
+
+  # -- Enable downsampling of metrics for long-term storage
+  enableDownsampling: true
+
+  # -- Image pull policy for observability component images
+  imagePullPolicy: IfNotPresent
+
+  # -- Node selector for scheduling observability workloads
+  nodeSelector: {}
+  #   node-role.kubernetes.io/infra: ""
+
+  # -- Tolerations for observability workloads
+  tolerations: []
+  #   - key: node-role.kubernetes.io/infra
+  #     operator: Exists
+  #     effect: NoSchedule
+
+  # -- Additional annotations on the MCO CR
+  annotations: {}
+
+  # ---------------------------------------------------------------------------
+  # Observability Addon Spec (applied to all managed clusters)
+  # ---------------------------------------------------------------------------
+  observabilityAddonSpec:
+    # -- Whether managed clusters push metrics to the hub
+    enableMetrics: true
+    # -- Metrics push interval in seconds (range: 15-3600)
+    interval: 300
+    # -- Resource requirements for metrics-collector on managed clusters
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 400m
+        memory: 512Mi
+
+  # ---------------------------------------------------------------------------
+  # Storage Configuration
+  # ---------------------------------------------------------------------------
+  storageConfig:
+    # -- StorageClass for observability StatefulSets.
+    # Leave empty to use cluster default. For ROSA, "gp3-csi" is recommended.
+    storageClass: ""
+    # -- PVC sizes per component
+    alertmanagerStorageSize: "1Gi"
+    compactStorageSize: "100Gi"
+    receiveStorageSize: "100Gi"
+    ruleStorageSize: "1Gi"
+    storeStorageSize: "10Gi"
+
+  # -- Write storage endpoints for exporting metrics to external systems
+  writeStorage: []
+  #   - name: remote-write-secret
+  #     key: thanos.yaml
+
+  # ---------------------------------------------------------------------------
+  # Advanced Configuration
+  # ---------------------------------------------------------------------------
+  advanced:
+    # -- Enable the advanced configuration block
+    enabled: false
+
+    # -- Retention configuration
+    retentionConfig:
+      retentionResolutionRaw: "30d"
+      retentionResolution5m: "180d"
+      retentionResolution1h: "365d"
+      retentionInLocal: "24h"
+      blockDuration: "2h"
+      deleteDelay: "48h"
+
+    # -- Per-component overrides (replicas and resources)
+    # Set replicas to null to use instanceSize defaults
+    receive:
+      replicas: null
+      resources: {}
+    query:
+      replicas: null
+      resources: {}
+    queryFrontend:
+      replicas: null
+      resources: {}
+    compact:
+      resources: {}
+    store:
+      replicas: null
+      resources: {}
+    rule:
+      replicas: null
+      resources: {}
+    grafana:
+      replicas: null
+      resources: {}
+    alertmanager:
+      replicas: null
+      resources: {}
+    rbacQueryProxy:
+      replicas: null
+      resources: {}
+    observatoriumAPI:
+      replicas: null
+      resources: {}
+
+# =============================================================================
+# Alertmanager Configuration (Optional)
+# =============================================================================
+alertmanagerConfig:
+  # -- Create the alertmanager-config secret with custom alert routing
+  enabled: false
+  # -- Full alertmanager.yaml configuration
+  config: |
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'namespace']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: 'default'
+    receivers:
+    - name: 'default'
+
+# =============================================================================
+# Custom Metrics Allowlist (Optional)
+# =============================================================================
+customMetrics:
+  # -- Create the observability-metrics-custom-allowlist ConfigMap
+  enabled: false
+  # -- Additional metric names to collect from managed clusters
+  names: []
+  #   - node_memory_MemTotal_bytes
+  #   - container_cpu_cfs_throttled_seconds_total
+  # -- Metric names to EXCLUDE from the default allowlist
+  excludeNames: []
+  # -- Custom recording rules
+  rules: []
+  #   - record: "apiserver_request_duration_seconds:histogram_quantile_90"
+  #     expr: 'histogram_quantile(0.90,sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb!="WATCH"}[5m])) by (verb,le))'
+  # -- User workload metric names
+  userWorkloadMetrics:
+    names: []
+
+# =============================================================================
+# Cluster Observability Operator (COO)
+# =============================================================================
+coo:
+  # -- Install the Cluster Observability Operator via OLM Subscription
+  enabled: true
+  # -- OLM channel for the COO subscription
+  channel: stable
+  # -- COO version (used to identify the CSV for install plan approval)
+  version: "1.4.0"
+
+  uiPlugin:
+    # -- Create the UIPlugin CR for multi-cluster alerting in the console
+    enabled: true
+    incidents:
+      # -- Enable the Incidents view (requires COO 1.3+ and OCP 4.19+)
+      enabled: false
+
+# =============================================================================
+# OpenShift Console Links
+# =============================================================================
+consoleLinks:
+  # -- Create ConsoleLink resources for Grafana, Alertmanager, and Prometheus
+  # in the OpenShift console application menu
+  enabled: true
+  # -- OpenShift apps domain (e.g., apps.rosa.dev-hub-1.xxxx.p3.openshiftapps.com)
+  domain: "apps.rosa.dev-hub-1.1c5d.p3.openshiftapps.com"
+
+# =============================================================================
+# Custom Thanos Ruler Alert Rules (Optional)
+# =============================================================================
+customAlertRules:
+  # -- Create the thanos-ruler-custom-rules ConfigMap
+  enabled: true
+  # -- Alert rule groups evaluated by Thanos Ruler across all clusters
+  groups:
+    - name: cluster-cpu-alerts
+      rules:
+        - alert: ClusterCPURequestSaturation
+          expr: >-
+            sum by (cluster) (kube_pod_container_resource_requests{resource="cpu"})
+            / sum by (cluster) (kube_node_status_allocatable{resource="cpu"})
+            * 100 > 90
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CPU request saturation above 90% on {{ $labels.cluster }}"
+            description: "Cluster {{ $labels.cluster }} has CPU request saturation at {{ $value | humanize }}%. Consider scaling nodes or reducing workload requests."
+
+# =============================================================================
+# Custom Grafana Dashboards
+# =============================================================================
+# Drop JSON files into chart/dashboards/ — they are auto-discovered and
+# deployed as ConfigMaps. No values.yaml changes needed.
