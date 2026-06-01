@@ -1,3 +1,15 @@
+# Helper status checker - waits for COO operator CSV before applying CRDs
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: cluster-observability-operator
+      subscriptionName: cluster-observability-operator
+      namespace:
+        name: openshift-operators
+      serviceAccount:
+        name: "coo-install-check"
+
 # -- Whether the chart should create the observability namespace
 createNamespace: true
 
