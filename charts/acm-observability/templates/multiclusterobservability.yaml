@@ -4,10 +4,12 @@ metadata:
   name: {{ .Values.mco.name }}
   labels:
     {{- include "acm-observability.labels" . | nindent 4 }}
-  {{- with .Values.mco.annotations }}
   annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    {{- with .Values.mco.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   instanceSize: {{ .Values.mco.instanceSize }}
   enableDownsampling: {{ .Values.mco.enableDownsampling }}

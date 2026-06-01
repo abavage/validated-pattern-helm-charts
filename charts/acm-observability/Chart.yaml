@@ -2,7 +2,7 @@ apiVersion: v2
 name: acm-observability
 description: Red Hat Advanced Cluster Management Multi-Cluster Observability Stack
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "2.16"
 keywords:
   - acm
@@ -17,3 +17,8 @@ home: https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_manageme
 sources:
   - https://github.com/stolostron/multicluster-observability-operator
 kubeVersion: ">=1.25.0-0"
+dependencies:
+  - name: helper-status-checker
+    version: 4.4.3
+    repository: https://rosa-hcp-dedicated-vpc.github.io/helm-repository/
+    condition: helper-status-checker.enabled
