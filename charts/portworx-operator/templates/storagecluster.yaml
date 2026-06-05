@@ -27,5 +27,8 @@ spec:
   env:
     - name: PX_CLOUD_IDENTITY
       value: {{ .Values.storageCluster.iamRoleArn | quote }}
+  workloadIdentity:
+    credentials:
+      role_arn: {{ .Values.storageCluster.iamRoleArn | quote }}
   {{- end }}
 {{- end }}
