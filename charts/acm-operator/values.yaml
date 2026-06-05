@@ -21,7 +21,7 @@ helper-operator:
       namespace:
         name: open-cluster-management
       subscription:
-        channel: release-2.14
+        channel: release-2.16
         approval: Manual
         operatorName: advanced-cluster-management
         source: redhat-operators

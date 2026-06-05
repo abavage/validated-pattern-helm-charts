@@ -1,10 +1,9 @@
 apiVersion: v2
-name: rosa-virtualization
-description: Helm chart for deploying OpenShift Virtualization operator on ROSA
-icon: https://raw.githubusercontent.com/openshift/console/master/frontend/public/imgs/logos/openshift.svg
+name: mtv-operator
+description: Helm chart for deploying Migration Toolkit for Virtualization (MTV) on OpenShift
 type: application
-version: 1.0.2
-appVersion: "4.20"
+version: 0.1.0
+appVersion: "2.7"
 dependencies:
   - name: helper-status-checker
     version: 4.4.3

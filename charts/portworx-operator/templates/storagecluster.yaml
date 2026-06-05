@@ -1,0 +1,31 @@
+{{- if .Values.storageCluster.enabled }}
+apiVersion: core.libopenstorage.org/v1
+kind: StorageCluster
+metadata:
+  name: {{ .Values.storageCluster.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.storageCluster.syncWave | default "5" | quote }}
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
+    portworx.io/service-account: portworx
+spec:
+  image: portworx/oci-monitor:{{ .Values.storageCluster.imageVersion }}
+  imagePullPolicy: Always
+  cloudStorage:
+    deviceSpecs:
+    {{- range .Values.storageCluster.cloudStorage.deviceSpecs }}
+      - type={{ .type }},size={{ .size }},iops={{ .iops }}
+    {{- end }}
+    maxStorageNodesPerZone: {{ .Values.storageCluster.cloudStorage.maxStorageNodesPerZone }}
+    kvdbDeviceSpec: {{ .Values.storageCluster.cloudStorage.kvdbDeviceSpec | quote }}
+  secretsProvider: k8s
+  stork:
+    enabled: true
+  autopilot:
+    enabled: true
+  {{- if .Values.storageCluster.iamRoleArn }}
+  env:
+    - name: PX_CLOUD_IDENTITY
+      value: {{ .Values.storageCluster.iamRoleArn | quote }}
+  {{- end }}
+{{- end }}

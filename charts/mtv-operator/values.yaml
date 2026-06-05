@@ -1,0 +1,31 @@
+namespace: openshift-mtv
+
+subscription:
+  name: mtv-operator
+  channel: release-v2.7
+  installPlanApproval: Manual
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: true
+  name: mtv-operator-group
+
+forkliftController:
+  enabled: true
+  name: mtv
+  syncWave: 5
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: mtv-operator
+      subscriptionName: mtv-operator
+      namespace:
+        name: openshift-mtv
+      sleeptimer: 10
+      maxretries: 60
+      serviceAccount:
+        name: "mtv-status-checker"

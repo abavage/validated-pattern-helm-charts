@@ -1,0 +1,13 @@
+{{- if .Values.monitoring.enableUserWorkload }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-options: Replace=true
+data:
+  config.yaml: |
+    enableUserWorkload: true
+{{- end }}

@@ -1,0 +1,11 @@
+{{- if .Values.forkliftController.enabled }}
+apiVersion: forklift.konveyor.io/v1beta1
+kind: ForkliftController
+metadata:
+  name: {{ .Values.forkliftController.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.forkliftController.syncWave | default "5" | quote }}
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
+spec: {}
+{{- end }}
