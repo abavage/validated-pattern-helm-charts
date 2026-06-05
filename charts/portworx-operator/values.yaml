@@ -19,6 +19,7 @@ storageCluster:
   iamRoleArn: ""
   imageVersion: "3.2.1"
   syncWave: 5
+  smallNode: false
   cloudStorage:
     deviceSpecs:
       - type: gp3

@@ -8,6 +8,9 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ .Values.storageCluster.syncWave | default "5" | quote }}
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
     portworx.io/service-account: portworx
+    {{- if .Values.storageCluster.smallNode }}
+    portworx.io/misc-args: "-rt_opts small_conf=1"
+    {{- end }}
 spec:
   image: portworx/oci-monitor:{{ .Values.storageCluster.imageVersion }}
   imagePullPolicy: Always
