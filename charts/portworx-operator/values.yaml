@@ -22,7 +22,7 @@ storageCluster:
   smallNode: false
   autopilot:
     enabled: true
-    prometheusUrl: "http://prometheus-operated.openshift-user-workload-monitoring.svc:9090"
+    prometheusUrl: "https://thanos-querier.openshift-monitoring.svc.cluster.local:9091"
   cloudStorage:
     deviceSpecs:
       - type: gp3

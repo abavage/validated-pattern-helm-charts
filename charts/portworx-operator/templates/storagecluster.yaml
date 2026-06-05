@@ -22,6 +22,12 @@ spec:
     initialStorageNodes: {{ .Values.storageCluster.cloudStorage.initialStorageNodes }}
     kvdbDeviceSpec: {{ .Values.storageCluster.cloudStorage.kvdbDeviceSpec | quote }}
   secretsProvider: k8s
+  monitoring:
+    prometheus:
+      enabled: false
+      exportMetrics: true
+      alertManager:
+        enabled: false
   stork:
     enabled: true
   autopilot:
