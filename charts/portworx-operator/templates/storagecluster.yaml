@@ -29,6 +29,8 @@ spec:
       value: {{ .Values.storageCluster.iamRoleArn | quote }}
   workloadIdentity:
     credentials:
-      - role_arn: {{ .Values.storageCluster.iamRoleArn | quote }}
+      - cloudProvider: aws
+        key: eks.amazonaws.com/role-arn
+        value: {{ .Values.storageCluster.iamRoleArn | quote }}
   {{- end }}
 {{- end }}
