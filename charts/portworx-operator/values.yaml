@@ -20,7 +20,7 @@ storageCluster:
   imageVersion: "3.6.1"
   syncWave: 5
   smallNode: false
-  autopilotPrometheusUrl: "https://thanos-querier.openshift-monitoring.svc.cluster.local:9091"
+  autopilotPrometheusUrl: "http://prometheus-operated.openshift-user-workload-monitoring.svc:9090"
   cloudStorage:
     deviceSpecs:
       - type: gp3
