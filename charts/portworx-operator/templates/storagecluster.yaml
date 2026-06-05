@@ -38,6 +38,14 @@ spec:
         type: prometheus
         params:
           url: {{ .Values.storageCluster.autopilot.prometheusUrl }}
+    env:
+      - name: SSL_CERT_DIR
+        value: /etc/ssl/certs:/etc/ssl/custom
+    volumes:
+      - name: autopilot-service-ca
+        mountPath: /etc/ssl/custom
+        configMap:
+          name: autopilot-service-ca
     {{- end }}
   {{- if .Values.storageCluster.iamRoleArn }}
   env:
