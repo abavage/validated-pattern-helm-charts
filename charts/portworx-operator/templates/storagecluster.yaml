@@ -29,6 +29,6 @@ spec:
       value: {{ .Values.storageCluster.iamRoleArn | quote }}
   workloadIdentity:
     credentials:
-      role_arn: {{ .Values.storageCluster.iamRoleArn | quote }}
+      - role_arn: {{ .Values.storageCluster.iamRoleArn | quote }}
   {{- end }}
 {{- end }}
