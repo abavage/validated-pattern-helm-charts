@@ -34,7 +34,7 @@ helper-status-checker:
   enabled: true
   approver: true
   checks:
-    - operatorName: portworx-certified
+    - operatorName: portworx-operator
       subscriptionName: portworx-certified
       namespace:
         name: portworx
