@@ -1,0 +1,10 @@
+{{- if .Values.storageCluster.autopilot.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autopilot-service-ca
+  namespace: {{ .Values.namespace }}
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+    argocd.argoproj.io/sync-wave: "1"
+{{- end }}
