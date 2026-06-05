@@ -1,0 +1,44 @@
+namespace: portworx
+
+subscription:
+  name: portworx-certified
+  channel: stable
+  installPlanApproval: Manual
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ""
+
+operatorGroup:
+  create: true
+  name: portworx-operator-group
+
+storageCluster:
+  enabled: true
+  name: px-cluster
+  # Required: IAM role ARN for Portworx workload identity (from terraform output portworx_role_arn)
+  iamRoleArn: ""
+  imageVersion: "3.2.1"
+  syncWave: 5
+  cloudStorage:
+    deviceSpecs:
+      - type: gp3
+        size: 150
+        iops: 3000
+    maxStorageNodesPerZone: 3
+    kvdbDeviceSpec: "type=gp3,size=150,iops=3000"
+
+monitoring:
+  enableUserWorkload: true
+
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: portworx-certified
+      subscriptionName: portworx-certified
+      namespace:
+        name: portworx
+      sleeptimer: 10
+      maxretries: 60
+      serviceAccount:
+        name: "portworx-status-checker"
