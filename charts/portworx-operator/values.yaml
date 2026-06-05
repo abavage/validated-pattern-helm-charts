@@ -17,7 +17,7 @@ storageCluster:
   name: px-cluster
   # Required: IAM role ARN for Portworx workload identity (from terraform output portworx_role_arn)
   iamRoleArn: ""
-  imageVersion: "3.2.1"
+  imageVersion: "3.6.1"
   syncWave: 5
   smallNode: false
   cloudStorage:
