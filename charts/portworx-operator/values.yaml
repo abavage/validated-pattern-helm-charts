@@ -25,7 +25,7 @@ storageCluster:
       - type: gp3
         size: 150
         iops: 3000
-    maxStorageNodesPerZone: 3
+    initialStorageNodes: 3
     kvdbDeviceSpec: "type=gp3,size=150,iops=3000"
 
 monitoring:
