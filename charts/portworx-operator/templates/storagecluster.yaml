@@ -30,8 +30,7 @@ spec:
       - name: default
         type: prometheus
         params:
-          url: {{ .Values.storageCluster.autopilotPrometheusUrl | default "https://thanos-querier.openshift-monitoring.svc.cluster.local:9091" }}
-          tls-skip-verify: "true"
+          url: {{ .Values.storageCluster.autopilotPrometheusUrl }}
   {{- if .Values.storageCluster.iamRoleArn }}
   env:
     - name: PX_CLOUD_IDENTITY
