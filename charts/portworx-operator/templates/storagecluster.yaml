@@ -25,12 +25,14 @@ spec:
   stork:
     enabled: true
   autopilot:
-    enabled: true
+    enabled: {{ .Values.storageCluster.autopilot.enabled }}
+    {{- if .Values.storageCluster.autopilot.enabled }}
     providers:
       - name: default
         type: prometheus
         params:
-          url: {{ .Values.storageCluster.autopilotPrometheusUrl }}
+          url: {{ .Values.storageCluster.autopilot.prometheusUrl }}
+    {{- end }}
   {{- if .Values.storageCluster.iamRoleArn }}
   env:
     - name: PX_CLOUD_IDENTITY

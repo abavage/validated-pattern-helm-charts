@@ -20,7 +20,9 @@ storageCluster:
   imageVersion: "3.6.1"
   syncWave: 5
   smallNode: false
-  autopilotPrometheusUrl: "http://prometheus-operated.openshift-user-workload-monitoring.svc:9090"
+  autopilot:
+    enabled: true
+    prometheusUrl: "http://prometheus-operated.openshift-user-workload-monitoring.svc:9090"
   cloudStorage:
     deviceSpecs:
       - type: gp3
