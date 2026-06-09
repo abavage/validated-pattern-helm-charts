@@ -9,6 +9,12 @@ helper-status-checker:
         name: open-cluster-management
       serviceAccount:
         name: "status-checker"
+    - operatorName: multicluster-engine
+      subscriptionName: multicluster-engine
+      namespace:
+        name: multicluster-engine
+      serviceAccount:
+        name: "mce-status-checker"
 # acm-operator.v2.13.3
 helper-operator:
   enabled: true
