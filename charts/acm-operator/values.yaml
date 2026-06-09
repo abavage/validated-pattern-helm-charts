@@ -13,6 +13,7 @@ helper-status-checker:
       subscriptionName: multicluster-engine
       namespace:
         name: multicluster-engine
+      syncwave: 3
       serviceAccount:
         name: "mce-status-checker"
 # acm-operator.v2.13.3
