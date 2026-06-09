@@ -8,6 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ .Values.storageCluster.syncWave | default "5" | quote }}
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
     portworx.io/service-account: portworx
+    portworx.io/scc-priority: "11"
     {{- if .Values.storageCluster.smallNode }}
     portworx.io/misc-args: "-rt_opts small_conf=1"
     {{- end }}
