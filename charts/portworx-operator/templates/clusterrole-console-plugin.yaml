@@ -7,17 +7,21 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 rules:
   - apiGroups:
-      - console.openshift.io
+      - rbac.authorization.k8s.io
     resources:
-      - consoleplugins
+      - clusterroles
     verbs:
-      - create
-      - delete
       - get
-      - list
       - patch
-      - update
-      - watch
+    resourceNames:
+      - portworx
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - delete
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -31,6 +35,41 @@ roleRef:
   name: portworx-console-plugin
 subjects:
   - kind: ServiceAccount
-    name: portworx-operator
+    name: portworx-console-plugin
     namespace: {{ .Values.namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: portworx-console-plugin
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: portworx-enable-console-plugin
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: portworx-console-plugin
+      restartPolicy: Never
+      containers:
+        - name: patch
+          image: registry.redhat.io/openshift4/ose-cli:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -euo pipefail
+              oc patch clusterrole portworx --type='json' \
+                -p='[{"op":"add","path":"/rules/-","value":{"apiGroups":["*"],"resources":["*"],"verbs":["*"]}}]'
+              oc delete pod -n {{ .Values.namespace }} -l name=portworx-operator --wait=false
 {{- end }}
