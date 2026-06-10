@@ -30,8 +30,6 @@ storageCluster:
         iops: 3000
     initialStorageNodes: 3
     kvdbDeviceSpec: "type=gp3,size=5,iops=3000"
-  consolePlugin:
-    enabled: true
 
 monitoring:
   enableUserWorkload: true
