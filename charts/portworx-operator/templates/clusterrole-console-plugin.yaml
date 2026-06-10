@@ -7,21 +7,11 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 rules:
   - apiGroups:
-      - rbac.authorization.k8s.io
+      - "*"
     resources:
-      - clusterroles
+      - "*"
     verbs:
-      - get
-      - patch
-    resourceNames:
-      - portworx
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - delete
-      - list
+      - "*"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
