@@ -48,6 +48,10 @@ spec:
         configMap:
           name: autopilot-service-ca
     {{- end }}
+  {{- if .Values.storageCluster.consolePlugin.enabled }}
+  userInterface:
+    enabled: true
+  {{- end }}
   {{- if .Values.storageCluster.iamRoleArn }}
   env:
     - name: PX_CLOUD_IDENTITY
