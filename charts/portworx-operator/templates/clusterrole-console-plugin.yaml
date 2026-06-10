@@ -1,0 +1,36 @@
+{{- if .Values.storageCluster.consolePlugin.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: portworx-console-plugin
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+rules:
+  - apiGroups:
+      - console.openshift.io
+    resources:
+      - consoleplugins
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: portworx-console-plugin
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: portworx-console-plugin
+subjects:
+  - kind: ServiceAccount
+    name: portworx-operator
+    namespace: {{ .Values.namespace }}
+{{- end }}
