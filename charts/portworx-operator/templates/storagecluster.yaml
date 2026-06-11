@@ -59,4 +59,9 @@ spec:
         key: eks.amazonaws.com/role-arn
         value: {{ .Values.storageCluster.iamRoleArn | quote }}
   {{- end }}
+  {{- if .Values.storageCluster.ocpDynamicPlugin }}
+  ocpDynamicPlugin:
+    cacheAgentImage: {{ .Values.storageCluster.ocpDynamicPlugin.cacheAgentImage | quote }}
+    pluginImage: {{ .Values.storageCluster.ocpDynamicPlugin.pluginImage | quote }}
+  {{- end }}
 {{- end }}
