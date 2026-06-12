@@ -31,8 +31,8 @@ storageCluster:
     initialStorageNodes: 3
     kvdbDeviceSpec: "type=gp3,size=5,iops=3000"
   ocpDynamicPlugin:
-    cacheAgentImage: "pure-artifactory.dev.purestorage.com/px-docker-prod-virtual/portworx/base-px-cache-agent:1.1.0-dev"
-    pluginImage: "pure-artifactory.dev.purestorage.com/px-docker-prod-virtual/portworx/base-portworx-dynamic-plugin:2.3.0-dev"
+    cacheAgentImage: "docker.io/portworx/px-cache-agent:1.1.0-ea"
+    pluginImage: "docker.io/portworx/portworx-dynamic-plugin:2.3.0-ea"
 
 monitoring:
   enableUserWorkload: true
