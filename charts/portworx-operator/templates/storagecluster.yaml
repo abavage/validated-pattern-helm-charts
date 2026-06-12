@@ -16,6 +16,7 @@ metadata:
 spec:
   image: portworx/oci-monitor:{{ .Values.storageCluster.imageVersion }}
   imagePullPolicy: Always
+  startPort: {{ .Values.storageCluster.startPort | default 17001 }}
   cloudStorage:
     deviceSpecs:
     {{- range .Values.storageCluster.cloudStorage.deviceSpecs }}

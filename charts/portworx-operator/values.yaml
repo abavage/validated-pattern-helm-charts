@@ -18,6 +18,7 @@ storageCluster:
   # Required: IAM role ARN for Portworx workload identity (from terraform output portworx_role_arn)
   iamRoleArn: ""
   imageVersion: "3.6.1"
+  startPort: 17001
   syncWave: 5
   smallNode: false
   autopilot:
