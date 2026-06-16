@@ -27,7 +27,7 @@ storageCluster:
   cloudStorage:
     deviceSpecs:
       - type: gp3
-        size: 20
+        size: 180
         iops: 3000
     initialStorageNodes: 3
     kvdbDeviceSpec: "type=gp3,size=5,iops=3000"
