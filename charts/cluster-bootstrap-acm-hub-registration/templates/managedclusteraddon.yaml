@@ -1,9 +1,42 @@
-{{- if .Values.applicationManager.enabled }}
+{{- $namespace := .Values.clusterName }}
+{{- $installNs := .Values.addonInstallNamespace | default "open-cluster-management-agent-addon" }}
+{{- if .Values.addons.applicationManager.enabled }}
+---
 apiVersion: addon.open-cluster-management.io/v1alpha1
 kind: ManagedClusterAddOn
 metadata:
   name: application-manager
-  namespace: {{ .Values.clusterName }}
+  namespace: {{ $namespace }}
 spec:
-  installNamespace: {{ .Values.applicationManager.installNamespace }}
+  installNamespace: {{ $installNs }}
+{{- end }}
+{{- if .Values.addons.governancePolicyFramework.enabled }}
+---
+apiVersion: addon.open-cluster-management.io/v1alpha1
+kind: ManagedClusterAddOn
+metadata:
+  name: governance-policy-framework
+  namespace: {{ $namespace }}
+spec:
+  installNamespace: {{ $installNs }}
+{{- end }}
+{{- if .Values.addons.configPolicyController.enabled }}
+---
+apiVersion: addon.open-cluster-management.io/v1alpha1
+kind: ManagedClusterAddOn
+metadata:
+  name: config-policy-controller
+  namespace: {{ $namespace }}
+spec:
+  installNamespace: {{ $installNs }}
+{{- end }}
+{{- if .Values.addons.searchCollector.enabled }}
+---
+apiVersion: addon.open-cluster-management.io/v1alpha1
+kind: ManagedClusterAddOn
+metadata:
+  name: search-collector
+  namespace: {{ $namespace }}
+spec:
+  installNamespace: {{ $installNs }}
 {{- end }}
