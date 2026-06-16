@@ -14,7 +14,7 @@ operatorGroup:
 
 storageCluster:
   enabled: true
-  name: px-cluster
+  name: px-cluster-v2
   # Required: IAM role ARN for Portworx workload identity (from terraform output portworx_role_arn)
   iamRoleArn: ""
   imageVersion: "3.6.1"
