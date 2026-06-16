@@ -11,9 +11,16 @@ managedCluster:
   leaseDurationSeconds: 60
 
 # ManagedClusterAddOn configuration
-applicationManager:
-  enabled: true
-  installNamespace: open-cluster-management-agent-addon
+addons:
+  applicationManager:
+    enabled: true
+  governancePolicyFramework:
+    enabled: true
+  configPolicyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+addonInstallNamespace: open-cluster-management-agent-addon
 
 # GitOpsCluster configuration
 gitopsCluster:
