@@ -14,7 +14,7 @@ operatorGroup:
 
 storageCluster:
   enabled: true
-  name: px-cluster-v2
+  name: px-cluster-v3
   imageVersion: "3.6.1"
   startPort: 17001
   syncWave: 5
