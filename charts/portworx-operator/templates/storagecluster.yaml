@@ -7,35 +7,54 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: {{ .Values.storageCluster.syncWave | default "5" | quote }}
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
-    portworx.io/service-account: portworx
     portworx.io/service-type: "portworx-api:LoadBalancer"
-    portworx.io/scc-priority: "11"
-    {{- if .Values.storageCluster.smallNode }}
-    portworx.io/misc-args: "-rt_opts small_conf=1"
-    {{- end }}
+    portworx.io/is-openshift: "true"
+    portworx.io/is-eks: "true"
+    portworx.io/preflight-check: "true"
+    portworx.io/portworx-proxy: "false"
+    portworx.io/misc-args: {{ .Values.storageCluster.miscArgs | quote }}
 spec:
-  image: portworx/oci-monitor:{{ .Values.storageCluster.imageVersion }}
+  image: docker.io/portworx/oci-monitor:{{ .Values.storageCluster.imageVersion }}
   imagePullPolicy: Always
   startPort: {{ .Values.storageCluster.startPort | default 17001 }}
+  secretsProvider: k8s
+  kvdb:
+    internal: true
+    {{- if .Values.storageCluster.kvdb }}
+    enableTLS: {{ .Values.storageCluster.kvdb.enableTLS | default false }}
+    {{- end }}
   cloudStorage:
     deviceSpecs:
     {{- range .Values.storageCluster.cloudStorage.deviceSpecs }}
-      - type={{ .type }},size={{ .size }},iops={{ .iops }}
+      - {{ . | quote }}
     {{- end }}
-    initialStorageNodes: {{ .Values.storageCluster.cloudStorage.initialStorageNodes }}
-    kvdbDeviceSpec: {{ .Values.storageCluster.cloudStorage.kvdbDeviceSpec | quote }}
-  secretsProvider: k8s
-  monitoring:
-    prometheus:
-      enabled: false
-      exportMetrics: true
-      alertManager:
-        enabled: false
+    {{- if .Values.storageCluster.cloudStorage.journalDeviceSpec }}
+    journalDeviceSpec: {{ .Values.storageCluster.cloudStorage.journalDeviceSpec | quote }}
+    {{- end }}
+    {{- if .Values.storageCluster.cloudStorage.systemMetadataDeviceSpec }}
+    systemMetadataDeviceSpec: {{ .Values.storageCluster.cloudStorage.systemMetadataDeviceSpec | quote }}
+    {{- end }}
+  {{- if .Values.storageCluster.runtimeOptions }}
+  runtimeOptions:
+    {{- range $key, $val := .Values.storageCluster.runtimeOptions }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  {{- end }}
   stork:
     enabled: true
+    args:
+      webhook-controller: "true"
+  csi:
+    enabled: true
+  monitoring:
+    telemetry:
+      enabled: true
+    prometheus:
+      exportMetrics: true
+  {{- if .Values.storageCluster.autopilot }}
+  {{- if .Values.storageCluster.autopilot.enabled }}
   autopilot:
-    enabled: {{ .Values.storageCluster.autopilot.enabled }}
-    {{- if .Values.storageCluster.autopilot.enabled }}
+    enabled: true
     providers:
       - name: default
         type: prometheus
@@ -49,7 +68,8 @@ spec:
         mountPath: /etc/ssl/custom
         configMap:
           name: autopilot-service-ca
-    {{- end }}
+  {{- end }}
+  {{- end }}
   {{- if .Values.storageCluster.iamRoleArn }}
   env:
     - name: PX_CLOUD_IDENTITY
@@ -59,6 +79,18 @@ spec:
       - cloudProvider: aws
         key: eks.amazonaws.com/role-arn
         value: {{ .Values.storageCluster.iamRoleArn | quote }}
+  {{- else if .Values.storageCluster.awsCredsSecret }}
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          key: aws-key
+          name: {{ .Values.storageCluster.awsCredsSecret }}
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          key: aws-secret
+          name: {{ .Values.storageCluster.awsCredsSecret }}
   {{- end }}
   {{- if .Values.storageCluster.ocpDynamicPlugin }}
   ocpDynamicPlugin:

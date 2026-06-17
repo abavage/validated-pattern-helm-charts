@@ -15,22 +15,28 @@ operatorGroup:
 storageCluster:
   enabled: true
   name: px-cluster-v2
-  # Required: IAM role ARN for Portworx workload identity (from terraform output portworx_role_arn)
-  iamRoleArn: ""
   imageVersion: "3.6.1"
   startPort: 17001
   syncWave: 5
-  smallNode: false
+  miscArgs: "-rt_opts small_conf=1 -T px-storev2 "
+  # Authentication: use iamRoleArn for IRSA, or awsCredsSecret for static keys
+  iamRoleArn: ""
+  # awsCredsSecret: "aws-creds"
+  kvdb:
+    enableTLS: false
+  cloudStorage:
+    deviceSpecs:
+      - "type=gp3,size=50"
+      - "type=gp3,size=50"
+      - "type=gp3,size=50"
+      - "type=gp3,size=50"
+    journalDeviceSpec: "type=gp3,size=3"
+    systemMetadataDeviceSpec: "type=gp3,size=64"
+  runtimeOptions:
+    default-io-profile: "6"
   autopilot:
     enabled: true
     prometheusUrl: "https://thanos-querier.openshift-monitoring.svc.cluster.local:9091"
-  cloudStorage:
-    deviceSpecs:
-      - type: gp3
-        size: 180
-        iops: 3000
-    initialStorageNodes: 3
-    kvdbDeviceSpec: "type=gp3,size=5,iops=3000"
   ocpDynamicPlugin:
     cacheAgentImage: "docker.io/portworx/px-cache-agent:1.1.0-ea"
     pluginImage: "docker.io/portworx/portworx-dynamic-plugin:2.3.0-ea"
