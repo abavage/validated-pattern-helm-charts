@@ -21,7 +21,8 @@ adcEndpointOverrides:
   us-isof-south-1: csp.hci.ic.gov
   eu-isoe-west-1: cloud.adc-e.uk
   eusc-de-east-1: amazonaws.eu
-k8sMode: ROSA # can be EKS | ROSA | K8S
+## can be EKS | ROSA | K8S
+k8sMode: ROSA
 ## Enable dualstack endpoints for IPv6 support (default: false)
 useDualstackEndpoint: false
 ## Provide default tolerations
@@ -676,7 +677,8 @@ admissionWebhooks:
   ## If true, Helm will automatically create a self-signed cert and secret for you.
   autoGenerateCert:
     enabled: true
-    expiryDays: 3650 # 10 years
+    ## 10 years
+    expiryDays: 3650
     recreate: true
   ## TLS Certificate Option 2: Use certManager to generate self-signed certificate.
   ## certManager must be enabled. If enabled, it takes precedence over option 1.
@@ -699,11 +701,14 @@ agents:
   - name: cloudwatch-agent
   - name: cloudwatch-agent-cluster-scraper
     mode: deployment
-    config: "default" # the reserved string "default" indicates building the default config dynamically
+    # the reserved string "default" indicates building the default config dynamicall
+    config: "default"
 agent:
   name:
-  mode: daemonset # Represents the mode the AmazonCloudWatchAgent workload will run in (deployment, daemonset or statefulset)
-  replicas: 1 # The total number non-terminated pods targeted by this AmazonCloudWatchAgent's deployment or statefulSet.
+  # Represents the mode the AmazonCloudWatchAgent workload will run in (deployment, daemonset or statefulset)
+  mode: daemonset
+  # The total number non-terminated pods targeted by this AmazonCloudWatchAgent's deployment or statefulSet.
+  replicas: 1 
   image:
     repository: cloudwatch-agent
     tag: 1.300069.0b1529
@@ -747,7 +752,8 @@ agent:
   ## If true, Helm will automatically create a self-signed cert and secret for you.
   autoGenerateCert:
     enabled: true
-    expiryDays: 3650 # 10 years
+    # 10 years
+    expiryDays: 3650
   ## TLS Certificate Option 2: Use certManager to generate self-signed certificate.
   ## certManager must be enabled. If enabled, it takes precedence over option 1.
   certManager:
@@ -761,9 +767,12 @@ agent:
     certificateAnnotations: {}
     issuerAnnotations: {}
   serviceAccount:
-    name: # override agent service account name
-  config: # optional config that can be provided to override the default config
-  otelConfig: # optional YAML config that can be provided to combine with the build-default-otel-config output
+    # override agent service account name
+    name:
+  # optional config that can be provided to override the default config
+  config:
+  # optional YAML config that can be provided to combine with the build-default-otel-config output
+  otelConfig:
   prometheus:
     config:
     targetAllocator:
@@ -810,7 +819,8 @@ dcgmExporter:
     address: :9400
   kubeletPath: /var/lib/kubelet/pod-resources
   serviceAccount:
-    name: # override exporter service account name
+    # override exporter service account name
+    name:
   securityContext:
     capabilities:
       add:
@@ -985,7 +995,8 @@ neuronMonitor:
       add:
         - SYS_ADMIN
   serviceAccount:
-    name: # override exporter service account name
+    # override exporter service account name
+    name:
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
