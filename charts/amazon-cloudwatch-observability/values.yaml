@@ -13,7 +13,6 @@ replicaCount: 1
 ##
 nameOverride: ""
 ## Provide the ClusterName (this is a required parameter)
-#clusterName:
 # Endpoint overrides for isolated regions (commercial regions defaults to empty) the front will have logs.${REGION}
 adcEndpointOverrides:
   us-iso-east-1: c2s.ic.gov
