@@ -708,7 +708,7 @@ agent:
   # Represents the mode the AmazonCloudWatchAgent workload will run in (deployment, daemonset or statefulset)
   mode: daemonset
   # The total number non-terminated pods targeted by this AmazonCloudWatchAgent's deployment or statefulSet.
-  replicas: 1 
+  replicas: 1
   image:
     repository: cloudwatch-agent
     tag: 1.300069.0b1529
