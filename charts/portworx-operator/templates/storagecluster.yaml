@@ -7,6 +7,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: {{ .Values.storageCluster.syncWave | default "5" | quote }}
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
+    portworx.io/service-account: portworx
     portworx.io/service-type: "portworx-api:LoadBalancer"
     portworx.io/is-openshift: "true"
     portworx.io/is-eks: "true"
